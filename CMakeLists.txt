@@ -66,7 +66,6 @@ add_executable(CityTraffic
     simulation/Simulation.cpp
     src/Bus.cpp
     src/Car.cpp
-    src/Entity.cpp
     src/EntityManager.cpp
     src/Map.cpp
     src/Pedestrian.cpp

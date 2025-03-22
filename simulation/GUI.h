@@ -6,6 +6,7 @@
 #define GUI_H
 
 #include<SFML/Graphics.hpp>
+#include<vector>
 
 class GUI {
 public:
@@ -13,7 +14,11 @@ public:
 	void run();
 private:
 	sf::RenderWindow _window;
-	sf::RectangleShape rectangle;
+	sf::RectangleShape _buttonsRectangle;
+	sf::Text _title;
+	std::vector<sf::RectangleShape> _buttons;
+	std::vector<sf::Text> _buttonLabels;
+	sf::Font _font;
 	
 	void processEvents();
 	void update();

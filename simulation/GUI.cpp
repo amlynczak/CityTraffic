@@ -6,9 +6,41 @@
 
 GUI::GUI() : _window(sf::VideoMode(1600, 800), "CityTraffic")
 {
-    rectangle.setSize(sf::Vector2f(200.f, 150.f));
-    rectangle.setFillColor(sf::Color::Green);
-    rectangle.setPosition(900.f, 225.f);
+	if (!_font.loadFromFile("../../../../resources/Overpass-Black.ttf"))
+	{
+		std::abort();
+	}
+
+    _buttonsRectangle.setSize(sf::Vector2f(400.f, 800.f));
+    _buttonsRectangle.setFillColor(sf::Color::White);
+    _buttonsRectangle.setPosition(1200.f, 0.f);
+
+	_title.setString("CityTraffic");
+	_title.setFont(_font);
+	_title.setCharacterSize(48);
+	_title.setFillColor(sf::Color::Black);
+	_title.setPosition(1250.f, 50.f);
+
+	_buttonLabels.resize(6);
+	_buttonLabels[0].setString("Start/Stop");
+	_buttonLabels[1].setString("Reset");
+	_buttonLabels[2].setString("Number of cars");
+	_buttonLabels[3].setString("Number of pedestrians");
+	_buttonLabels[4].setString("Cycle of trafficLights");
+	_buttonLabels[5].setString("Simulation speed");
+
+	for (size_t i = 0; i < _buttonLabels.size(); i++)
+	{
+		_buttons.push_back(sf::RectangleShape(sf::Vector2f(300.f, 50.f)));
+		_buttons[i].setFillColor(sf::Color::Blue);
+		_buttons[i].setPosition(1250.f, 150.f + 100.f * i);
+		_buttonLabels[i].setFont(_font);
+		_buttonLabels[i].setCharacterSize(24);
+		_buttonLabels[i].setFillColor(sf::Color::White);
+		_buttonLabels[i].setPosition(1250.f, 150.f + 100.f * i);
+	}
+
+
 }
 
 void GUI::run()
@@ -39,6 +71,11 @@ void GUI::update()
 void GUI::render()
 {
     _window.clear();
-    _window.draw(rectangle);
+    _window.draw(_buttonsRectangle);
+	_window.draw(_title);
+
+	for (const auto& button : _buttons) _window.draw(button);
+	for (const auto& label : _buttonLabels) _window.draw(label);
+
     _window.display();
 }

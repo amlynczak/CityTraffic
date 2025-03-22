@@ -9,8 +9,16 @@
 class Entity {
 public:
     virtual void update(float delta) = 0;
-    virtual void draw(sf::RenderWindow& window) = 0;
     virtual ~Entity() = default;
+
+	int getId() const { return _id; }
+	float getX() const { return _x; }
+	float getY() const { return _y; }
+
+protected:
+    int _id;
+	float _x;
+	float _y;
 };
 
 #endif //ENTITY_H

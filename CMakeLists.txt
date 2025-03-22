@@ -73,11 +73,15 @@ add_executable(CityTraffic
     src/TrafficLights.cpp
     src/Vehicle.cpp
 )
-#
-# target_link_libraries(CityTraffic PRIVATE
-#     sfml-graphics
-#     sfml-window
-#     sfml-audio
-#     sfml-network
-#     sfml-system
-# )
+
+# Dodaj katalogi nagłówków
+target_include_directories(CityTraffic PRIVATE include simulation)
+
+# Linkuj SFML do CityTraffic
+target_link_libraries(CityTraffic PRIVATE
+    sfml-graphics
+    sfml-window
+    sfml-audio
+    sfml-network
+    sfml-system
+)

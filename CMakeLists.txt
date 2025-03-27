@@ -56,21 +56,20 @@ add_executable(CityTraffic
     include/Vehicle.h
     include/TrafficLights.h
     include/Pedestrian.h
-    simulation/Simulation.h
-    simulation/GUI.h
+    "include/Simulation.h"
+    gui/GUI.h
     include/Entity.h
     include/Car.h
     include/Bus.h
     include/EntityManager.h
-    simulation/GUI.cpp
-    simulation/Simulation.cpp
+    gui/GUI.cpp
+    "src/Simulation.cpp"
     src/Bus.cpp
     src/Car.cpp
     src/EntityManager.cpp
     src/Map.cpp
     src/Pedestrian.cpp
     src/TrafficLights.cpp
-    src/Vehicle.cpp
 )
 
 # Dodaj katalogi nagłówków

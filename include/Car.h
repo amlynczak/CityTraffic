@@ -1,14 +1,13 @@
-//
-// Created by adamm on 25-03-06.
-//
-
-#include"Vehicle.h";
-
 #ifndef CAR_H
 #define CAR_H
 
-class Car : public Vehicle {
+#include"Vehicle.h";
 
+class Car : public Vehicle {
+public:
+	Car(int id, float x, float y, float speed, Direction dir);
+
+	void update(float delta) override;
 };
 
 #endif //CAR_H

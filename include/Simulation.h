@@ -11,13 +11,16 @@
 
 class Simulation {
 private:
-    EntityManager entityManager;
-    Map map;
-    TrafficLights lights;
-    bool running;
+    EntityManager _entityManager;
+    Map _map;
+    TrafficLights _lights;
+    bool _running;
 
 public:
-    void init();             
+	Simulation();
+
+    void init();  
+    void stop();
     void update(float dt);  
     bool isRunning() const; 
 };

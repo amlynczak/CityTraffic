@@ -4,7 +4,9 @@
 #include"Vehicle.h";
 
 class Car : public Vehicle {
-	Car(int id, float x, float y, float velocity) : Vehicle(id, x, y, velocity) {}
+public:
+	Car(int id, float x, float y, float speed, Direction dir);
+
 	void update(float delta) override;
 };
 

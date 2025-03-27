@@ -5,12 +5,14 @@
 
 class Vehicle : public Entity{
 public:
-	Vehicle(int id, float x, float y, float velocity) : Entity(id, x, y), _velocity(velocity) {}
+	Vehicle(int id, float x, float y, Direction dir, float speed) : Entity(id, x, y, dir), _speed(speed) {}
+	virtual ~Vehicle() = default;
+
 	virtual void update(float delta) = 0;
-	float getVelocity() const { return _velocity; }
-	void setVelocity(float velocity) { this->_velocity = velocity; }
+	float getSpeed() const { return _speed; }
+	void setSpeed(float speed) { _speed = speed; }
 protected:
-	float _velocity;
+	float _speed;
 };
 
-#endif //VEHICLE_H
+#endif

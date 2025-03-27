@@ -7,14 +7,15 @@
 
 class Bus : public Vehicle {
 public:
-	Bus(int id, float x, float y, float velocity) : Vehicle(id, x, y, velocity) {}
+	Bus(int id, float x, float y, float velocity, Direction dir);
+	void setRoute(std::vector<std::pair<float, float>> route);
 	void update(float delta) override;
 
 private:
 	std::vector<std::pair<float, float>> _route;
-	size_t _currentStop;
+	int _currentStop;
 	float _stopTime;
-	bool atStop;
+	bool _atStop;
 };
 
 #endif //BUS_H

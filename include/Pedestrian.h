@@ -4,7 +4,8 @@
 #include"Entity.h"
 
 class Pedestrian : public Entity {
-	Pedestrian(int id, float x, float y) : Entity(id, x, y) {}
+public:
+	Pedestrian(int id, float x, float y, Direction dir);
 	void update(float delta) override;
 };
 

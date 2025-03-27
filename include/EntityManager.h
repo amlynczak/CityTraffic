@@ -1,7 +1,3 @@
-//
-// Created by adamm on 25-03-06.
-//
-
 #ifndef ENTITYMANAGER_H
 #define ENTITYMANAGER_H
 
@@ -11,10 +7,12 @@
 
 class EntityManager {
 private:
-    std::vector<std::shared_ptr<Entity>> entities;
+    std::vector<std::shared_ptr<Entity>> _entities;
 
 public:
     void addEntity(std::shared_ptr<Entity> entity);
+	void removeEntity(int id);
+    void clearAll();
     void updateAll(float deltaTime);
 };
 

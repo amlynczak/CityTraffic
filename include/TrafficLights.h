@@ -1,7 +1,3 @@
-//
-// Created by adamm on 25-03-06.
-//
-
 #ifndef TRAFFICLIGHTS_H
 #define TRAFFICLIGHTS_H
 
@@ -14,6 +10,7 @@ private:
 
 public:
     TrafficLights();
+    void setup();
     void update(float deltaTime);
     LightState getState() const;
 };

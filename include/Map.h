@@ -16,6 +16,8 @@ public:
 	int getWidth()const;
 	int getHeight()const;
 
+	std::vector<std::pair<int, int>> getStartPositions()const;
+
 private:
 	std::vector<std::vector<int>> _grid;
 	int _width;

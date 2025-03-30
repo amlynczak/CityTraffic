@@ -3,12 +3,20 @@
 
 Pedestrian::Pedestrian(int id, float x, float y, Direction dir) : Entity(id, x, y, dir) {}
 
-void Pedestrian::update(float delta) {
+void Pedestrian::update(float delta, const Map& map) {
 	float speed = 2.0f;
 
-	if (_dir == Direction::HOR){
-		_x += speed * delta;
-	} else {
-		_y += speed * delta;
+	switch (_dir)
+	{
+	case Direction::UP:
+		break;
+	case Direction::DOWN:
+		break;
+	case Direction::RIGHT:
+		break;
+	case Direction::LEFT:
+		break;
+	default:
+		break;
 	}
 }

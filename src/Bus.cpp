@@ -7,6 +7,6 @@ void Bus::setRoute(std::vector<std::pair<float, float>> route) {
 	_route = route;
 }
 
-void Bus::update(float delta) {
+void Bus::update(float delta, const Map& map) {
 	
 }

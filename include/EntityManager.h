@@ -13,7 +13,7 @@ public:
     void addEntity(std::shared_ptr<Entity> entity);
 	void removeEntity(int id);
     void clearAll();
-    void updateAll(float deltaTime);
+    void updateAll(float deltaTime, const Map& map);
 };
 
 #endif //ENTITYMANAGER_H

@@ -20,6 +20,7 @@ public:
 	Simulation();
 
     void init();  
+    void run();
     void stop();
     void update(float dt);  
     bool isRunning() const; 

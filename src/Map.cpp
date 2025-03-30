@@ -86,3 +86,18 @@ int Map::getWidth()const {
 int Map::getHeight()const {
 	return _height;
 }
+
+std::vector<std::pair<int, int>> Map::getStartPositions()const {
+	std::vector<std::pair<int, int>> positions;
+	for (int y = 0; y < _height; ++y) {
+		if (_grid[y][0] == 1) {
+			positions.push_back({ 0, y });
+		}
+	}
+	for (int x = 0; x < _width; ++x) {
+		if (_grid[0][x] == 1) {
+			positions.push_back({ x, 0 });
+		}
+	}
+	return positions;
+}

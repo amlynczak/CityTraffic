@@ -2,11 +2,24 @@
 #define MAP_H
 
 #include<string>
+#include<vector>
 
 class Map {
 public:
-    void loadFromFile(const std::string& filename);
-    void draw(); // placeholder for GUI integration
+	Map();
+
+    bool loadFromFile(const std::string& filename);
+    void printMap()const;
+
+	int getTile(int x, int y)const;
+	void setTile(int x, int y, int value);
+	int getWidth()const;
+	int getHeight()const;
+
+private:
+	std::vector<std::vector<int>> _grid;
+	int _width;
+	int _height;
 };
 
 #endif //MAP_H

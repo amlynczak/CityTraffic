@@ -37,7 +37,27 @@ bool Map::loadFromFile(const std::string& filename) {
 void Map::printMap()const {
 	for (const auto& row : _grid) {
 		for (const auto& tile : row) {
-			std::cout << tile << " ";
+			switch (tile)
+			{
+			case 0:
+				std::cout << "  ";
+				break;
+			case 1:
+				std::cout << "- ";
+				break;
+			case 2:
+				std::cout << "^ ";
+				break;
+			case 3:
+			case 4:
+				std::cout << "X ";
+				break;
+			case 5:
+				std::cout << "O ";
+				break;
+			default:
+				break;
+			}
 		}
 		std::cout << std::endl;
 	}

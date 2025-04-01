@@ -4,6 +4,12 @@
 
 Car::Car(int id, float x, float y, float speed, Direction dir) : Vehicle(id, x, y, dir, speed) {}
 
+bool Car::canTravel(const Map& map, int nextX, int nextY) {
+	int nextTile = map.getTile(nextX, nextY);
+	if (nextTile == 0 || nextTile == 2 || nextTile == -1) return false;
+	return true;
+}
+
 void Car::update(float delta, const Map& map) {
 	float ditance = 1;// _speed* delta;
 	float nextX = _x;
@@ -27,6 +33,7 @@ void Car::update(float delta, const Map& map) {
 		break;
 	}
 
+
 	int tileType = map.getTile(nextX, nextY);
 	if (tileType == 1 || tileType == 4 || tileType == 5) {
 		_x = nextX;
@@ -49,7 +56,7 @@ void Car::update(float delta, const Map& map) {
 		}
 	}
 
-	if (tileType == 0 || tileType == 2) {
+	if (tileType == 0 || tileType == 2  || tileType == -1) {
 		if (_dir == Direction::UP) _dir = Direction::DOWN;
 		if (_dir == Direction::DOWN) _dir = Direction::UP;
 		if (_dir == Direction::RIGHT) _dir = Direction::LEFT;

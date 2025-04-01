@@ -9,7 +9,7 @@
 Simulation::Simulation() : _running(false) {}
 
 void Simulation::init() {
-	if (!_map.loadFromFile("../../../../resources/city_100x40.csv")) {
+	if (!_map.loadFromFile("../../../../resources/map.csv")) {
 		std::cerr << "Error: cannot load map from file" << std::endl;
 		return;
 	}

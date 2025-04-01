@@ -35,32 +35,82 @@ void Car::update(float delta, const Map& map) {
 
 
 	int tileType = map.getTile(nextX, nextY);
-	if (tileType == 1 || tileType == 4 || tileType == 5) {
+	if (tileType == 1 || tileType == 5) {
 		_x = nextX;
 		_y = nextY;
 	}
 	
 	if (tileType == 4) {
 		int turn = rand() % 3; // 0 = prosto, 1 = w lewo, 2 = w prawo
-		if (turn == 1) { // Skrêt w lewo
-			if (_dir == Direction::UP) _dir = Direction::LEFT;
-			else if (_dir == Direction::DOWN) _dir = Direction::RIGHT;
-			else if (_dir == Direction::LEFT) _dir = Direction::DOWN;
-			else if (_dir == Direction::RIGHT) _dir = Direction::UP;
+		if (turn == 0) { // Prosto
+			if (_dir == Direction::UP) _y = nextY - 2;
+			else if (_dir == Direction::DOWN) _y = nextY + 2;
+			else if (_dir == Direction::LEFT) _x = nextX - 2;
+			else if (_dir == Direction::RIGHT) _x = nextX + 2;
+		}
+		else if (turn == 1) { // Skrêt w lewo
+			if (_dir == Direction::UP) {
+				_x = nextX - 2;
+				_y = nextY - 1;
+				_dir = Direction::LEFT;
+			}
+			else if (_dir == Direction::DOWN) {
+				_x = nextX + 2;
+				_y = nextY + 1;
+				_dir = Direction::RIGHT;
+			}
+			else if (_dir == Direction::LEFT) {
+				_x = nextX - 1;
+				_y = nextY + 2;
+				_dir = Direction::DOWN;
+			}
+			else if (_dir == Direction::RIGHT) {
+				_x = nextX + 1;
+				_y = nextY - 2;
+				_dir = Direction::UP;
+			}
 		}
 		else if (turn == 2) { // Skrêt w prawo
-			if (_dir == Direction::UP) _dir = Direction::RIGHT;
-			else if (_dir == Direction::DOWN) _dir = Direction::LEFT;
-			else if (_dir == Direction::LEFT) _dir = Direction::UP;
-			else if (_dir == Direction::RIGHT) _dir = Direction::DOWN;
+			if (_dir == Direction::UP) {
+				_x = nextX + 1;
+				_y = nextY;
+				_dir = Direction::RIGHT;
+			}
+			else if (_dir == Direction::DOWN) {
+				_x = nextX - 1;
+				_y = nextY;
+				_dir = Direction::LEFT;
+			}
+			else if (_dir == Direction::LEFT) {
+				_x = nextX;
+				_y = nextY - 1;
+				_dir = Direction::UP;
+			}
+			else if (_dir == Direction::RIGHT) {
+				_x = nextX;
+				_y = nextY + 1;
+				_dir = Direction::DOWN;
+			}
 		}
 	}
 
-	if (tileType == 0 || tileType == 2  || tileType == -1) {
-		if (_dir == Direction::UP) _dir = Direction::DOWN;
-		if (_dir == Direction::DOWN) _dir = Direction::UP;
-		if (_dir == Direction::RIGHT) _dir = Direction::LEFT;
-		if (_dir == Direction::LEFT) _dir = Direction::RIGHT;
+	if (tileType == -1) {
+		if (_dir == Direction::UP) {
+			_x--;
+			_dir = Direction::DOWN;
+		}
+		if (_dir == Direction::DOWN) {
+			_x++;
+			_dir = Direction::UP;
+		}
+		if (_dir == Direction::RIGHT) {
+			_y--;
+			_dir = Direction::LEFT;
+		}
+		if (_dir == Direction::LEFT) {
+			_y++;
+			_dir = Direction::RIGHT;
+		}
 	}
 	std::cout << "Car " << _id << tileType << std::endl;
 	std::cout << "Car " << _id << " position: " << _x << ", " << _y << std::endl;

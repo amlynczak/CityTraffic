@@ -5,7 +5,7 @@
 Car::Car(int id, float x, float y, float speed, Direction dir) : Vehicle(id, x, y, dir, speed) {}
 
 void Car::update(float delta, const Map& map) {
-	float ditance = _speed * delta;
+	float ditance = 1;// _speed* delta;
 	float nextX = _x;
 	float nextY = _y;
 
@@ -47,6 +47,13 @@ void Car::update(float delta, const Map& map) {
 			else if (_dir == Direction::LEFT) _dir = Direction::UP;
 			else if (_dir == Direction::RIGHT) _dir = Direction::DOWN;
 		}
+	}
+
+	if (tileType == 0 || tileType == 2) {
+		if (_dir == Direction::UP) _dir = Direction::DOWN;
+		if (_dir == Direction::DOWN) _dir = Direction::UP;
+		if (_dir == Direction::RIGHT) _dir = Direction::LEFT;
+		if (_dir == Direction::LEFT) _dir = Direction::RIGHT;
 	}
 	std::cout << "Car " << _id << tileType << std::endl;
 	std::cout << "Car " << _id << " position: " << _x << ", " << _y << std::endl;

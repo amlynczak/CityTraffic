@@ -89,14 +89,24 @@ int Map::getHeight()const {
 
 std::vector<std::pair<int, int>> Map::getStartPositions()const {
 	std::vector<std::pair<int, int>> positions;
-	for (int y = 0; y < _height; ++y) {
-		if (_grid[y][0] == 1) {
-			positions.push_back({ 0, y });
+	for (int y = 0; y < _height - 1; ++y) {
+		if (_grid[y][0] == 1 && _grid[y+1][0] == 1) {
+			positions.push_back({ 0, y + 1 });
 		}
 	}
-	for (int x = 0; x < _width; ++x) {
-		if (_grid[0][x] == 1) {
-			positions.push_back({ x, 0 });
+	for (int x = 0; x < _width - 1; ++x) {
+		if (_grid[0][x] == 1 && _grid[0][x+1] == 1) {
+			positions.push_back({ x + 1, 0 });
+		}
+	}
+	for (int y = _height - 1; y > 1; --y) {
+		if (_grid[y][_width-1] == 1 && _grid[y - 1][_width-1] == 1) {
+			positions.push_back({ _width-1, y - 1 });
+		}
+	}
+	for (int x = _width - 1; x > 1; --x) {
+		if (_grid[_height - 1][x] == 1 && _grid[_height - 1][x - 1] == 1) {
+			positions.push_back({ x - 1, _height - 1 });
 		}
 	}
 	return positions;

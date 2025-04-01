@@ -21,6 +21,12 @@ void Simulation::init() {
 	if (startPositions[random].first == 0) {
 		dir = Direction::RIGHT;
 	}
+	else if(startPositions[random].first == _map.getWidth() - 1){
+		dir = Direction::LEFT;
+	}
+	else if (startPositions[random].second == 0) {
+		dir = Direction::DOWN;
+	}
 	else {
 		dir = Direction::UP;
 	}
@@ -32,6 +38,12 @@ void Simulation::init() {
 	random = rand() % startPositions.size();
 	if (startPositions[random].first == 0) {
 		dir = Direction::RIGHT;
+	}
+	else if (startPositions[random].first == _map.getWidth() - 1) {
+		dir = Direction::LEFT;
+	}
+	else if (startPositions[random].second == 0) {
+		dir = Direction::DOWN;
 	}
 	else {
 		dir = Direction::UP;

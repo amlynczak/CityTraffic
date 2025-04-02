@@ -70,6 +70,7 @@ add_executable(CityTraffic
     src/Map.cpp
     src/Pedestrian.cpp
     src/TrafficLights.cpp
+    src/Vehicle.cpp
 )
 
 # Dodaj katalogi nagłówków

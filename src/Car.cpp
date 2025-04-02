@@ -3,6 +3,7 @@
 #include<stdlib.h>
 
 Car::Car(int id, float x, float y, float speed, Direction dir) : Vehicle(id, x, y, dir, speed) {}
+Car::Car(int id) : Vehicle(id) {}
 
 bool Car::canTravel(const Map& map, int nextX, int nextY) {
 	int nextTile = map.getTile(nextX, nextY);

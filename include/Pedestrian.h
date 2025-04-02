@@ -5,7 +5,9 @@
 
 class Pedestrian : public Entity {
 public:
+	Pedestrian(int id);
 	Pedestrian(int id, float x, float y, Direction dir);
+	void placeOnMap(const Map& map) override;
 	void update(float delta, const Map& map) override;
 };
 

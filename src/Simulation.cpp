@@ -52,6 +52,10 @@ void Simulation::init() {
 	car2->setSpeed(50.0f);
 	_entityManager.addEntity(car2);
 
+	auto pedestrian = std::make_shared<Pedestrian>(3);
+	pedestrian->placeOnMap(_map);
+	_entityManager.addEntity(pedestrian);
+
 	_running = true;
 }
 

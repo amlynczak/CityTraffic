@@ -64,13 +64,13 @@ add_executable(CityTraffic
     include/EntityManager.h
     gui/GUI.cpp
     "src/Simulation.cpp"
+    src/Vehicle.cpp
     src/Bus.cpp
     src/Car.cpp
     src/EntityManager.cpp
     src/Map.cpp
     src/Pedestrian.cpp
     src/TrafficLights.cpp
-    src/Vehicle.cpp
 )
 
 # Dodaj katalogi nagłówków

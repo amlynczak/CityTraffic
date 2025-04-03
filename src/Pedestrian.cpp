@@ -53,7 +53,7 @@ void Pedestrian::placeOnMap(const Map& map) {
 }
 
 void Pedestrian::update(float delta, const Map& map) {
-	float distance = 0.5;
+	float distance = 1;
 	int nextX = _x;
 	int nextY = _y;
 
@@ -80,6 +80,30 @@ void Pedestrian::update(float delta, const Map& map) {
 		_x = nextX;
 		_y = nextY;
 	}
+
+	if (tileType == 3 && map.getTile((int)_x, (int)_y) == 2) {
+		int turn = rand() % 3; // 0 = prosto, 1 = w lewo, 2 = w prawo
+		if (turn == 0) { // Prosto
+			if (_dir == Direction::UP) _y = nextY - 1;
+			else if (_dir == Direction::DOWN) _y = nextY + 1;
+			else if (_dir == Direction::LEFT) _x = nextX - 1;
+			else if (_dir == Direction::RIGHT) _x = nextX + 1;
+		}
+		else if (turn == 1) { // Skrêt w lewo
+			if (_dir == Direction::UP) _dir = Direction::LEFT;
+			else if (_dir == Direction::DOWN) _dir = Direction::RIGHT;
+			else if (_dir == Direction::LEFT) _dir = Direction::DOWN;
+			else if (_dir == Direction::RIGHT) _dir = Direction::UP;
+		}
+		else if (turn == 2) { // Skrêt w prawo
+			if (_dir == Direction::UP) _dir = Direction::RIGHT;
+			else if (_dir == Direction::DOWN) _dir = Direction::LEFT;
+			else if (_dir == Direction::LEFT) _dir = Direction::UP;
+			else if (_dir == Direction::RIGHT) _dir = Direction::DOWN;
+		}
+		return;
+	}
+
 	if (tileType == -1) {
 		switch (_dir)
 		{
@@ -96,9 +120,29 @@ void Pedestrian::update(float delta, const Map& map) {
 			_dir = Direction::RIGHT;
 			break;
 		}
+		return;
 	}
 	if (tileType == 5 || tileType == 1) {
-
+		switch (_dir)
+		{
+		case Direction::UP:
+			_dir = Direction::RIGHT;
+			break;
+		case Direction::DOWN:
+			_dir = Direction::LEFT;
+			break;
+		case Direction::RIGHT:
+			_dir = Direction::UP;
+			break;
+		case Direction::LEFT:
+			_dir = Direction::DOWN;
+			break;
+		case Direction::NONE:
+			break;
+		default:
+			break;
+		}
+		return;
 	}
 
 	this->setX(nextX);

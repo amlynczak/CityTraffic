@@ -36,7 +36,7 @@ void Car::update(float delta, const Map& map) {
 
 
 	int tileType = map.getTile(nextX, nextY);
-	if (tileType == 1 || tileType == 5) {
+	if (tileType == 1 || tileType == 5 || tileType == 3) {
 		_x = nextX;
 		_y = nextY;
 	}

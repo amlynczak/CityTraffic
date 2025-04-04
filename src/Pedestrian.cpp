@@ -75,19 +75,55 @@ void Pedestrian::update(float delta, const Map& map) {
 		break;
 	}
 
-	int tileType = map.getTile(nextX, nextY);
-	if (tileType == 2) {
-		_x = nextX;
-		_y = nextY;
+	int currentTile = map.getTile((int)_x, (int)_y);
+	int nextTile = map.getTile(nextX, nextY);
+
+	std::cout << "Pedestrian" << _id << std::endl;
+	std::cout << "Current tile: " << currentTile << std::endl;
+	std::cout << "Next tile: " << nextTile << std::endl;
+
+	if (nextTile == -1) {
+		switch (_dir)
+		{
+		case Direction::UP:
+			_dir = Direction::DOWN;
+			break;
+		case Direction::DOWN:
+			_dir = Direction::UP;
+			break;
+		case Direction::RIGHT:
+			_dir = Direction::LEFT;
+			break;
+		case Direction::LEFT:
+			_dir = Direction::RIGHT;
+			break;
+		default:
+			break;
+		}
+		return;
 	}
 
-	if (tileType == 3 && map.getTile((int)_x, (int)_y) == 2) {
+	if (nextTile == 0) {
+		this->placeOnMap(map);
+		return;
+	}
+
+	if (nextTile == 1) {
+		this->placeOnMap(map);
+		return;
+	}
+
+	if (nextTile == 2) {
+		_x = nextX;
+		_y = nextY;
+		return;
+	}
+
+	if (nextTile == 3 && currentTile == 2) {
 		int turn = rand() % 3; // 0 = prosto, 1 = w lewo, 2 = w prawo
-		if (turn == 0) { // Prosto
-			if (_dir == Direction::UP) _y = nextY - 1;
-			else if (_dir == Direction::DOWN) _y = nextY + 1;
-			else if (_dir == Direction::LEFT) _x = nextX - 1;
-			else if (_dir == Direction::RIGHT) _x = nextX + 1;
+		if (turn == 0) {
+			_x = nextX;
+			_y = nextY;
 		}
 		else if (turn == 1) { // Skrêt w lewo
 			if (_dir == Direction::UP) _dir = Direction::LEFT;
@@ -104,50 +140,19 @@ void Pedestrian::update(float delta, const Map& map) {
 		return;
 	}
 
-	if (tileType == -1) {
-		switch (_dir)
-		{
-		case Direction::UP:
-			_dir = Direction::DOWN;
-			break;
-		case Direction::DOWN:
-			_dir = Direction::UP;
-			break;
-		case Direction::RIGHT:
-			_dir = Direction::LEFT;
-			break;
-		case Direction::LEFT:
-			_dir = Direction::RIGHT;
-			break;
-		}
-		return;
-	}
-	if (tileType == 5 || tileType == 1) {
-		switch (_dir)
-		{
-		case Direction::UP:
-			_dir = Direction::RIGHT;
-			break;
-		case Direction::DOWN:
-			_dir = Direction::LEFT;
-			break;
-		case Direction::RIGHT:
-			_dir = Direction::UP;
-			break;
-		case Direction::LEFT:
-			_dir = Direction::DOWN;
-			break;
-		case Direction::NONE:
-			break;
-		default:
-			break;
-		}
+	if (nextTile == 3 && currentTile == 3) {
+		_x = nextX;
+		_y = nextY;
 		return;
 	}
 
-	this->setX(nextX);
-	this->setY(nextY);
+	if (nextTile == 4) {
+		this->placeOnMap(map);
+		return;
+	}
 
-	std::cout << "Pedestrian" << _id << " " << tileType << std::endl;
-	std::cout << "Pedestrian" << _id << " position: " << _x << ", " << _y << std::endl;
+	if (nextTile == 5) {
+		this->placeOnMap(map);
+		return;
+	}
 }

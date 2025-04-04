@@ -34,85 +34,96 @@ void Car::update(float delta, const Map& map) {
 		break;
 	}
 
+	int currentTile = map.getTile((int)_x, (int)_y);
+	int nextTile = map.getTile(nextX, nextY);
 
-	int tileType = map.getTile(nextX, nextY);
-	if (tileType == 1 || tileType == 5 || tileType == 3) {
-		_x = nextX;
-		_y = nextY;
-	}
-	
-	if (tileType == 4) {
-		int turn = rand() % 3; // 0 = prosto, 1 = w lewo, 2 = w prawo
-		if (turn == 0) { // Prosto
-			if (_dir == Direction::UP) _y = nextY - 2;
-			else if (_dir == Direction::DOWN) _y = nextY + 2;
-			else if (_dir == Direction::LEFT) _x = nextX - 2;
-			else if (_dir == Direction::RIGHT) _x = nextX + 2;
-		}
-		else if (turn == 1) { // Skrêt w lewo
-			if (_dir == Direction::UP) {
-				_x = nextX - 2;
-				_y = nextY - 1;
-				_dir = Direction::LEFT;
-			}
-			else if (_dir == Direction::DOWN) {
-				_x = nextX + 2;
-				_y = nextY + 1;
-				_dir = Direction::RIGHT;
-			}
-			else if (_dir == Direction::LEFT) {
-				_x = nextX - 1;
-				_y = nextY + 2;
-				_dir = Direction::DOWN;
-			}
-			else if (_dir == Direction::RIGHT) {
-				_x = nextX + 1;
-				_y = nextY - 2;
-				_dir = Direction::UP;
-			}
-		}
-		else if (turn == 2) { // Skrêt w prawo
-			if (_dir == Direction::UP) {
-				_x = nextX + 1;
-				_y = nextY;
-				_dir = Direction::RIGHT;
-			}
-			else if (_dir == Direction::DOWN) {
-				_x = nextX - 1;
-				_y = nextY;
-				_dir = Direction::LEFT;
-			}
-			else if (_dir == Direction::LEFT) {
-				_x = nextX;
-				_y = nextY - 1;
-				_dir = Direction::UP;
-			}
-			else if (_dir == Direction::RIGHT) {
-				_x = nextX;
-				_y = nextY + 1;
-				_dir = Direction::DOWN;
-			}
-		}
-	}
+	std::cout << "CAR" << _id << std::endl;
+	std::cout << "Current tile: " << currentTile << std::endl;
+	std::cout << "Next tile: " << nextTile << std::endl;
 
-	if (tileType == -1) {
-		if (_dir == Direction::UP) {
+	if (nextTile == -1) {
+		switch (_dir)
+		{
+		case Direction::UP:
 			_x--;
 			_dir = Direction::DOWN;
-		}
-		if (_dir == Direction::DOWN) {
+			break;
+		case Direction::DOWN:
 			_x++;
 			_dir = Direction::UP;
-		}
-		if (_dir == Direction::RIGHT) {
+			break;
+		case Direction::RIGHT:
 			_y--;
 			_dir = Direction::LEFT;
-		}
-		if (_dir == Direction::LEFT) {
+			break;
+		case Direction::LEFT:
 			_y++;
 			_dir = Direction::RIGHT;
+			break;
+		case Direction::NONE:
+			break;
+		default:
+			break;
+		}
+		return;
+	}
+
+	if (nextTile == 0) {
+		this->placeOnMap(map);
+		return;
+	}
+
+	if (nextTile == 1) {
+		_x = nextX;
+		_y = nextY;
+		return;
+	}
+
+	if (nextTile == 2) {
+		//TODO: inaczej to trzeba obs³u¿yæ chyba
+		this->placeOnMap(map);
+		return;
+	}
+
+	if (nextTile == 3) {
+		_x = nextX;
+		_y = nextY;
+		return;
+	}
+
+	if (nextTile == 4 && currentTile == 3) {
+		_x = nextX;
+		_y = nextY;
+		int turn = rand() % 2; // 0 = prosto, 1 = w prawo
+		if (turn == 0) { // Prosto
+			return;
+		}
+		else if (turn == 1) { // Skrêt w prawo
+			if (_dir == Direction::UP) _dir = Direction::RIGHT;
+			else if (_dir == Direction::DOWN) _dir = Direction::LEFT;
+			else if (_dir == Direction::LEFT) _dir = Direction::UP;
+			else if (_dir == Direction::RIGHT) _dir = Direction::DOWN;
 		}
 	}
-	std::cout << "Car " << _id << tileType << std::endl;
-	std::cout << "Car " << _id << " position: " << _x << ", " << _y << std::endl;
+
+	if (nextTile == 4 && currentTile == 4) {
+		_x = nextX;
+		_y = nextY;
+		int turn = rand() % 2; // 0 = prosto, 1 = w lewo
+		if (turn == 0) { // Prosto
+			return;
+		}
+		else if (turn == 1) { // Skrêt w lewo
+			if (_dir == Direction::UP) _dir = Direction::LEFT;
+			else if (_dir == Direction::DOWN) _dir = Direction::RIGHT;
+			else if (_dir == Direction::LEFT) _dir = Direction::DOWN;
+			else if (_dir == Direction::RIGHT) _dir = Direction::UP;
+		}
+	}
+
+	if (nextTile == 5) {
+		_x = nextX;
+		_y = nextY;
+		return;
+	}
 }

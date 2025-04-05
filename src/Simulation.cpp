@@ -1,4 +1,5 @@
 #include "Simulation.h"
+#include "Simulation.h"
 #include "Car.h"
 #include "Pedestrian.h"
 #include "Bus.h"
@@ -6,60 +7,76 @@
 #include <thread>
 #include <chrono>
 
-Simulation::Simulation() : _running(false) {}
-
-void Simulation::init() {
+Simulation::Simulation() : _running(false) 
+{
 	if (!_map.loadFromFile("../../../../resources/map.csv")) {
 		std::cerr << "Error: cannot load map from file" << std::endl;
 		return;
 	}
 	_map.printMap();
-	std::vector<std::pair<int, int>> startPositions = _map.getStartPositions();
 
-	int random = rand() % startPositions.size();
-	Direction dir;
-	if (startPositions[random].first == 0) {
-		dir = Direction::RIGHT;
-	}
-	else if(startPositions[random].first == _map.getWidth() - 1){
-		dir = Direction::LEFT;
-	}
-	else if (startPositions[random].second == 0) {
-		dir = Direction::DOWN;
-	}
-	else {
-		dir = Direction::UP;
+	for (int i = 0; i < 2; ++i) {
+		auto car = std::make_shared<Car>(i + 1);
+		car->placeOnMap(_map);
+		_entityManager.addEntity(car);
 	}
 
-	auto car1 = std::make_shared<Car>(1, startPositions[random].first, startPositions[random].second, 1, dir);
-	car1->setSpeed(50.0f);
-	_entityManager.addEntity(car1);
+	for (int i = 0; i < 1; ++i) {
+		auto pedestrian = std::make_shared<Pedestrian>(2 + i + 1);
+		pedestrian->placeOnMap(_map);
+		_entityManager.addEntity(pedestrian);
+	}
 
-	random = rand() % startPositions.size();
-	if (startPositions[random].first == 0) {
-		dir = Direction::RIGHT;
+	for (int i = 0; i < 1; ++i) {
+		auto bus = std::make_shared<Bus>(2 + 1 + i + 1);
+		bus->placeOnMap(_map);
+		bus->setRandomRoute(3, _map);
+		_entityManager.addEntity(bus);
 	}
-	else if (startPositions[random].first == _map.getWidth() - 1) {
-		dir = Direction::LEFT;
-	}
-	else if (startPositions[random].second == 0) {
-		dir = Direction::DOWN;
-	}
-	else {
-		dir = Direction::UP;
-	}
-	auto car2 = std::make_shared<Car>(2, startPositions[random].first, startPositions[random].second, 1, dir);
-	car2->setSpeed(50.0f);
-	_entityManager.addEntity(car2);
+}
 
-	auto pedestrian = std::make_shared<Pedestrian>(3);
-	pedestrian->placeOnMap(_map);
-	_entityManager.addEntity(pedestrian);
+Simulation::Simulation(int cars, int pedestrians, int buses, float cycleTime, int simulationSpeed) : _running(false)
+{
+	if (cars < 0 || pedestrians < 0 || buses < 0) {
+		std::cerr << "Error: Number of cars, pedestrians, and buses must be non-negative." << std::endl;
+		return;
+	}
+	if (cycleTime <= 0) {
+		std::cerr << "Error: Cycle time must be positive." << std::endl;
+		return;
+	}
+	if (simulationSpeed <= 0) {
+		std::cerr << "Error: Simulation speed must be positive." << std::endl;
+		return;
+	}
 
-	_running = true;
+	if (!_map.loadFromFile("../../../../resources/map.csv")) {
+		std::cerr << "Error: cannot load map from file" << std::endl;
+		return;
+	}
+	_map.printMap();
+
+	for (int i = 0; i < cars; ++i) {
+		auto car = std::make_shared<Car>(i + 1);
+		car->placeOnMap(_map);
+		_entityManager.addEntity(car);
+	}
+
+	for (int i = 0; i < pedestrians; ++i) {
+		auto pedestrian = std::make_shared<Pedestrian>(cars + i + 1);
+		pedestrian->placeOnMap(_map);
+		_entityManager.addEntity(pedestrian);
+	}
+
+	for (int i = 0; i < buses; ++i) {
+		auto bus = std::make_shared<Bus>(cars + pedestrians + i + 1);
+		bus->placeOnMap(_map);
+		_entityManager.addEntity(bus);
+	}
 }
 
 void Simulation::run() {
+	_running = true;
 	const float dt = 1.0f / 60.0f;
 	while (_running) {
 		update(dt);
@@ -69,7 +86,7 @@ void Simulation::run() {
 
 void Simulation::update(float dt) {
 	_entityManager.updateAll(dt, _map);
-	_lights.update(dt);
+	//_lights.update(dt);
 }
 
 bool Simulation::isRunning() const {

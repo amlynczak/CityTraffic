@@ -13,13 +13,12 @@ class Simulation {
 private:
     EntityManager _entityManager;
     Map _map;
-    TrafficLights _lights;
+    std::vector<TrafficLights> _lights;
     bool _running;
 
 public:
 	Simulation();
-
-    void init();  
+    Simulation(int cars, int pedestrians, int buses, float cycleTime, int simulationSpeed);
     void run();
     void stop();
     void update(float dt);  

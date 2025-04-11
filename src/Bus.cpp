@@ -29,7 +29,7 @@ void Bus::setRoute(std::vector<std::pair<float, float>> route) {
 
 void Bus::update(float delta, const Map& map) {
 	if (_atStop) {
-		_stopTime += delta;
+		_stopTime += 0.5 * delta;
 		if (_stopTime >= 2.0f) { // Stop for 2 seconds
 			_atStop = false;
 			_stopTime = 0;
@@ -49,7 +49,7 @@ void Bus::update(float delta, const Map& map) {
 	float distance = std::sqrt(dx * dx + dy * dy);
 
 	if (distance < 0.1f) { // If the bus is close enough to the stop
-		//_atStop = true;
+		_atStop = true;
 		_stopTime = 0;
 		if (_currentStop < _route.size() - 1) {
 			_currentStop++;
@@ -61,24 +61,120 @@ void Bus::update(float delta, const Map& map) {
 	}
 
 	float moveDistance = 1; // _speed* delta;
-	if (moveDistance > distance) {
-		moveDistance = distance;
+	float nextX = _x;
+	float nextY = _y;
+
+	switch (_dir)
+	{
+	case Direction::UP:
+		nextY -= moveDistance;
+		break;
+	case Direction::DOWN:
+		nextY += moveDistance;
+		break;
+	case Direction::RIGHT:
+		nextX += moveDistance;
+		break;
+	case Direction::LEFT:
+		nextX -= moveDistance;
+		break;
+	case Direction::NONE:
+		break;
+	default:
+		break;
 	}
 
-	_x += moveDistance * (dx / distance);
-	_y += moveDistance * (dy / distance);
+	int currentTile = map.getTile((int)_x, (int)_y);
+	int nextTile = map.getTile((int)nextX, (int)nextY);
 
 	std::cout << "Bus" << _id << std::endl;
 	std::cout << "Current position: (" << _x << ", " << _y << ")" << std::endl;
+	std::cout << "Next position: (" << nextX << ", " << nextY << ")" << std::endl;
 	std::cout << "Current stop: (" << targetX << ", " << targetY << ")" << std::endl;
 
-	// Update direction based on movement
-	if (std::abs(dx) > std::abs(dy)) {
-		_dir = (dx > 0) ? Direction::RIGHT : Direction::LEFT;
-	}
-	else {
-		_dir = (dy > 0) ? Direction::DOWN : Direction::UP;
+	if (nextTile == -1) {
+		switch (_dir)
+		{
+		case Direction::UP:
+			_x--;
+			_dir = Direction::DOWN;
+			break;
+		case Direction::DOWN:
+			_x++;
+			_dir = Direction::UP;
+			break;
+		case Direction::RIGHT:
+			_y--;
+			_dir = Direction::LEFT;
+			break;
+		case Direction::LEFT:
+			_y++;
+			_dir = Direction::RIGHT;
+			break;
+		case Direction::NONE:
+			break;
+		default:
+			break;
+		}
+		return;
 	}
 
-	//TODO: Check if the bus can travel to the next tile
+	if (nextTile == 0) {
+		this->placeOnMap(map);
+		return;
+	}
+
+	if (nextTile == 1) {
+		_x = nextX;
+		_y = nextY;
+		return;
+	}
+
+	if (nextTile == 2) {
+		//TODO: inaczej to trzeba obs³u¿yæ chyba
+		this->placeOnMap(map);
+		return;
+	}
+
+	if (nextTile == 3) {
+		_x = nextX;
+		_y = nextY;
+		return;
+	}
+
+    if (nextTile == 4 && currentTile == 3) {  
+       _x = nextX;  
+       _y = nextY;  
+       if (targetX > _x) {  
+           _dir = Direction::RIGHT;  
+       } else if (targetX < _x) {
+           _dir = Direction::LEFT;  
+       } else if (targetY > _y) {
+           _dir = Direction::DOWN;  
+       } else if (targetY < _y) {
+           _dir = Direction::UP;  
+       } 
+	   return;
+    }
+
+	if (nextTile == 4 && currentTile == 4) {
+		_x = nextX;
+		_y = nextY;
+		if (targetX < _x) {
+			_dir = Direction::LEFT;
+		}else if (targetX > _x) {
+			_dir = Direction::RIGHT;
+		}else if (targetY < _y) {
+			_dir = Direction::UP;
+		}else if (targetY > _y) {
+			_dir = Direction::DOWN;
+		}
+		return;
+	}
+
+	if (nextTile == 5) {
+		_x = nextX;
+		_y = nextY;
+		return;
+	}
 }

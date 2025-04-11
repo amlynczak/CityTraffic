@@ -7,12 +7,14 @@
 
 #include<SFML/Graphics.hpp>
 #include<vector>
+#include"../include/Simulation.h"
 
 class GUI {
 public:
-	GUI();
+	GUI(Simulation& sim);
 	void run();
 private:
+	Simulation& _simulation;
 	sf::RenderWindow _window;
 	sf::RectangleShape _buttonsRectangle;
 	sf::Text _title;

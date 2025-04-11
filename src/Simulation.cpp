@@ -1,5 +1,6 @@
 #include "Simulation.h"
 #include "Simulation.h"
+#include "Simulation.h"
 #include "Car.h"
 #include "Pedestrian.h"
 #include "Bus.h"
@@ -91,6 +92,11 @@ void Simulation::update(float dt) {
 
 bool Simulation::isRunning() const {
 	return _running;
+}
+
+Map& Simulation::getMap()
+{
+	return _map;
 }
 
 void Simulation::stop() {

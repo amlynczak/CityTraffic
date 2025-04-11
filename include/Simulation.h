@@ -23,6 +23,10 @@ public:
     void stop();
     void update(float dt);  
     bool isRunning() const; 
+
+	Map& getMap();
+	EntityManager& getEntityManager() { return _entityManager; }
+	std::vector<TrafficLights>& getTrafficLights() { return _lights; }
 };
 
 #endif //SIMULATION_H

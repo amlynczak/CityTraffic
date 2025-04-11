@@ -3,8 +3,11 @@
 //
 
 #include"GUI.h"
+#include"../include/Car.h"
+#include"../include/Bus.h"
+#include"../include/Pedestrian.h"
 
-GUI::GUI() : _window(sf::VideoMode(1600, 800), "CityTraffic")
+GUI::GUI(Simulation& sim) : _window(sf::VideoMode(1600, 800), "CityTraffic"), _simulation(sim)
 {
 	if (!_font.loadFromFile("../../../../resources/Overpass-Black.ttf"))
 	{
@@ -63,19 +66,72 @@ void GUI::processEvents()
     }
 }
 
-void GUI::update()
-{
-    
+void GUI::update() {
+    static sf::Clock clock;
+    float dt = clock.restart().asSeconds();
+    _simulation.update(dt);  // tylko jeœli chcesz symulacjê odpalaæ st¹d
 }
+
 
 void GUI::render()
 {
     _window.clear();
-    _window.draw(_buttonsRectangle);
-	_window.draw(_title);
 
-	for (const auto& button : _buttons) _window.draw(button);
-	for (const auto& label : _buttonLabels) _window.draw(label);
+    // 1. Rysuj mapê (siatkê)
+    const Map& map = _simulation.getMap();
+    for (int y = 0; y < map.getHeight(); ++y)
+    {
+        for (int x = 0; x < map.getWidth(); ++x)
+        {
+            sf::RectangleShape tile(sf::Vector2f(20.f, 20.f));
+            tile.setPosition(x * 20.f, y * 20.f);
+
+            switch (map.getTile(x, y)) {
+            case 0: tile.setFillColor(sf::Color(50, 200, 50)); break; // trawa
+            case 1: tile.setFillColor(sf::Color(100, 100, 100)); break; // jezdnia
+            case 2: tile.setFillColor(sf::Color(200, 200, 200)); break; // chodnik
+            default: tile.setFillColor(sf::Color::Black); break;
+            }
+
+            _window.draw(tile);
+        }
+    }
+
+    // 2. Rysuj encje (samochody itd.)
+    const auto& entities = _simulation.getEntityManager().getEntities();
+    for (const auto& entity : entities)
+    {
+        sf::RectangleShape e(sf::Vector2f(20.f, 20.f));
+        e.setPosition(entity->getX() * 20.f, entity->getY() * 20.f);
+
+        if (dynamic_cast<Car*>(entity.get()))
+            e.setFillColor(sf::Color::Blue);
+        else if (dynamic_cast<Bus*>(entity.get()))
+            e.setFillColor(sf::Color::Red);
+        else if (dynamic_cast<Pedestrian*>(entity.get()))
+            e.setFillColor(sf::Color::Yellow);
+        else
+            e.setFillColor(sf::Color::Magenta);
+
+        _window.draw(e);
+    }
+
+    // 3. Rysuj œwiat³a
+    /*const auto& lights = _simulation.getTrafficLights().getAllLights();
+    for (const auto& light : lights)
+    {
+        sf::CircleShape c(5.f);
+        c.setPosition(light.x * 20.f + 5.f, light.y * 20.f + 5.f);
+        c.setFillColor(light.green ? sf::Color::Green : sf::Color::Red);
+        _window.draw(c);
+    }*/
+
+    // 4. GUI interfejs
+    _window.draw(_buttonsRectangle);
+    _window.draw(_title);
+    for (const auto& button : _buttons) _window.draw(button);
+    for (const auto& label : _buttonLabels) _window.draw(label);
 
     _window.display();
 }
+

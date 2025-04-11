@@ -1,14 +1,18 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-enum class Direction { HOR, VERT};
+#include"Map.h"
+
+enum class Direction { UP, DOWN, RIGHT, LEFT, NONE};
 
 class Entity {
 public:
+	Entity(int id) : _id(id), _x(0), _y(0), _dir(Direction::NONE) {};
 	Entity(int id, float x, float y, Direction dir) : _id(id), _x(x), _y(y), _dir(dir) {};
     virtual ~Entity() = default;
 
-	virtual void update(float delta) = 0;
+	virtual void placeOnMap(const Map& map) = 0;
+	virtual void update(float delta, const Map& map) = 0;
 
 	int getId() const { return _id; }
 	float getX() const { return _x; }

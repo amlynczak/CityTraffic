@@ -7,9 +7,11 @@
 
 class Bus : public Vehicle {
 public:
+	Bus(int id);
 	Bus(int id, float x, float y, float velocity, Direction dir);
+	void setRandomRoute(int stops, const Map& map);
 	void setRoute(std::vector<std::pair<float, float>> route);
-	void update(float delta) override;
+	void update(float delta, const Map& map) override;
 
 private:
 	std::vector<std::pair<float, float>> _route;

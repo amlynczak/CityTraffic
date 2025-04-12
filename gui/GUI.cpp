@@ -68,7 +68,7 @@ void GUI::processEvents()
 
 void GUI::update() {
     static sf::Clock clock;
-    float dt = clock.restart().asSeconds();
+    float dt = 0.1;//clock.restart().asSeconds();
     _simulation.update(dt);  // tylko jeœli chcesz symulacjê odpalaæ st¹d
 }
 
@@ -88,8 +88,41 @@ void GUI::render()
 
             switch (map.getTile(x, y)) {
             case 0: tile.setFillColor(sf::Color(50, 200, 50)); break; // trawa
-            case 1: tile.setFillColor(sf::Color(100, 100, 100)); break; // jezdnia
+            case 1: 
+                tile.setFillColor(sf::Color(100, 100, 100)); // jezdnia
+
+                // Sprawdzenie poziomego pasa
+                if (x + 1 < map.getWidth() &&
+                    map.getTile(x, y) == 1 && map.getTile(x + 1, y) == 1 &&
+                    (x == 0 || map.getTile(x - 1, y) != 1) &&
+                    (x + 2 >= map.getWidth() || map.getTile(x + 2, y) != 1))
+                {
+                    if ((x + y) % 2 == 0) {
+                        sf::RectangleShape line(sf::Vector2f(2.f, 20.f));
+                        line.setFillColor(sf::Color(220, 220, 220));
+                        line.setPosition(x * 20.f + 10.f, y * 20.f);
+                        _window.draw(line);
+                    }
+                }
+
+                // Sprawdzenie pionowego pasa
+                if (y + 1 < map.getHeight() &&
+                    map.getTile(x, y) == 1 && map.getTile(x, y + 1) == 1 &&
+                    (y == 0 || map.getTile(x, y - 1) != 1) &&
+                    (y + 2 >= map.getHeight() || map.getTile(x, y + 2) != 1))
+                {
+                    if ((x + y) % 2 == 0) {
+                        sf::RectangleShape line(sf::Vector2f(20.f, 2.f));
+                        line.setFillColor(sf::Color(220, 220, 220));
+                        line.setPosition(x * 20.f, y * 20.f + 10.f);
+                        _window.draw(line);
+                    }
+                }
+
+                break; // jezdnia
             case 2: tile.setFillColor(sf::Color(200, 200, 200)); break; // chodnik
+			case 3: tile.setFillColor(sf::Color(100, 100, 100)); break; // przejœcie dla pieszych
+			case 4: tile.setFillColor(sf::Color(100, 100, 100)); break; // skrzy¿owanie
             default: tile.setFillColor(sf::Color::Black); break;
             }
 

@@ -3,6 +3,7 @@
 
 void Vehicle::placeOnMap(const Map& map)
 {
+	srand(time(0)); // Inicjalizacja generatora liczb losowych
 	int dir = rand() % 4;
 	switch (dir)
 	{

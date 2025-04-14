@@ -13,6 +13,8 @@ public:
     void setup();
     void update(float deltaTime);
     LightState getState() const;
+
+
 };
 
 #endif //TRAFFICLIGHTS_H

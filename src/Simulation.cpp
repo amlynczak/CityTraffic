@@ -1,5 +1,4 @@
 #include "Simulation.h"
-#include "Simulation.h"
 #include "Car.h"
 #include "Pedestrian.h"
 #include "Bus.h"
@@ -9,7 +8,7 @@
 
 Simulation::Simulation() : _running(false) 
 {
-	if (!_map.loadFromFile("../../../../resources/map.csv")) {
+	if (!_map.loadFromFile("../../../../resources/city_100x40.csv")) {
 		std::cerr << "Error: cannot load map from file" << std::endl;
 		return;
 	}
@@ -77,7 +76,7 @@ Simulation::Simulation(int cars, int pedestrians, int buses, float cycleTime, in
 
 void Simulation::run() {
 	_running = true;
-	const float dt = 1.0f / 60.0f;
+	const float dt = 1.0;// 1.0f / 60.0f;
 	while (_running) {
 		update(dt);
 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -91,6 +90,11 @@ void Simulation::update(float dt) {
 
 bool Simulation::isRunning() const {
 	return _running;
+}
+
+Map& Simulation::getMap()
+{
+	return _map;
 }
 
 void Simulation::stop() {

@@ -21,6 +21,12 @@ void Bus::setRandomRoute(int stops, const Map& map)
 		_route.push_back(std::make_pair(x, y));
 		std::cout << "Bus" << _id << " stop " << i << ": (" << x << ", " << y << ")" << std::endl;
 	}
+	_path = calculatePath(
+		{ static_cast<int>(_x), static_cast<int>(_y) },
+		{ static_cast<int>(_route[_currentStop].first), static_cast<int>(_route[_currentStop].second) },
+		map
+	);
+
 }
 
 void Bus::setRoute(std::vector<std::pair<float, float>> route) {
@@ -28,135 +34,140 @@ void Bus::setRoute(std::vector<std::pair<float, float>> route) {
 }
 
 void Bus::update(float delta, const Map& map) {
-    // Jeœli autobus jest na przystanku, odczekaj czas i przejdŸ do nastêpnego
-    if (_atStop) {
-        _stopTime += delta;
-        if (_stopTime >= 2.0f) { // Zatrzymaj siê na 2 sekundy
-            _atStop = false;
-            _stopTime = 0;
-            _currentStop++;
-            if (_currentStop >= _route.size()) {
-                _currentStop = 0; // Powróæ do pierwszego przystanku
-            }
-            // Oblicz now¹ œcie¿kê do kolejnego przystanku
-            _path = calculatePath({ _x, _y }, { _route[_currentStop].first, _route[_currentStop].second }, map);
-			std::cout << "Bus" << _id << " new path to stop " << _currentStop << ": (" << _route[_currentStop].first << ", " << _route[_currentStop].second << ")" << std::endl;
-        }
-        return;
-    }
+	if (_atStop) {
+		_stopTime += delta;
+		if (_stopTime >= 2.0f) {
+			_atStop = false;
+			_stopTime = 0;
+			_currentStop++;
+			if (_currentStop >= _route.size()) {
+				_currentStop = 0;
+			}
 
-    // Jeœli nie ma wyznaczonej trasy, nic nie rób
-    if (_path.empty()) return;
+			_path = calculatePath(
+				{ static_cast<int>(_x), static_cast<int>(_y) },
+				{ static_cast<int>(_route[_currentStop].first), static_cast<int>(_route[_currentStop].second) },
+				map
+			);
 
-    // Pobierz kolejny punkt na trasie
-    auto [targetX, targetY] = _path.front();
-    _path.pop();  // Usuñ punkt z kolejki
+			std::cout << "Bus" << _id << " new path to stop " << _currentStop
+				<< ": (" << _route[_currentStop].first << ", " << _route[_currentStop].second << ")" << std::endl;
+		}
+		return;
+	}
 
-    // Jeœli autobus jest blisko przystanku, zatrzymaj siê
-    float dx = targetX - _x;
-    float dy = targetY - _y;
-    float distance = std::sqrt(dx * dx + dy * dy);
+	if (_path.empty()) {
+		std::cout << "Bus" << _id << ": No path to follow!" << std::endl;
+		return;
+	}
 
-    if (distance < 0.1f) { // Jeœli autobus jest wystarczaj¹co blisko przystanku
-        _atStop = true;
-        _stopTime = 0;
-        return;
-    }
+	auto [targetX, targetY] = _path.front();
+	int currentX = static_cast<int>(_x);
+	int currentY = static_cast<int>(_y);
 
-    // Oblicz, w któr¹ stronê autobus ma siê poruszaæ
-    float moveDistance = 0.5f * delta;  // Ustalamy prêdkoœæ ruchu autobusu w danym czasie
+	int dx = targetX - currentX;
+	int dy = targetY - currentY;
 
-    float nextX = _x;
-    float nextY = _y;
+	int nextX = currentX;
+	int nextY = currentY;
 
-    // Poruszanie siê w kierunku X
-    if (targetX > _x) {
-        nextX += moveDistance;
-        _dir = Direction::RIGHT;
-    }
-    else if (targetX < _x) {
-        nextX -= moveDistance;
-        _dir = Direction::LEFT;
-    }
+	if (dx != 0) {
+		nextX += (dx > 0) ? 1 : -1;
+		_dir = (dx > 0) ? Direction::RIGHT : Direction::LEFT;
+	}
+	else if (dy != 0) {
+		nextY += (dy > 0) ? 1 : -1;
+		_dir = (dy > 0) ? Direction::DOWN : Direction::UP;
+	}
 
-    // Poruszanie siê w kierunku Y
-    if (targetY > _y) {
-        nextY += moveDistance;
-        _dir = Direction::DOWN;
-    }
-    else if (targetY < _y) {
-        nextY -= moveDistance;
-        _dir = Direction::UP;
-    }
+	int nextTile = map.getTile(nextX, nextY);
+	if (nextTile == 1 || nextTile == 3 || nextTile == 4 || nextTile == 5) {
+		_x = static_cast<float>(nextX);
+		_y = static_cast<float>(nextY);
 
-    // Sprawdzanie, czy autobus mo¿e przejechaæ przez nastêpny kafelek
-    int currentTile = map.getTile((int)_x, (int)_y);
-    int nextTile = map.getTile((int)nextX, (int)nextY);  // Poprawka, sprawdzamy kafelek na przysz³ej pozycji
-
-    std::cout << "Bus" << _id << std::endl;
-    std::cout << "Current position: (" << _x << ", " << _y << ")" << std::endl;
-    std::cout << "Next position: (" << nextX << ", " << nextY << ")" << std::endl;
-    std::cout << "Current stop: (" << targetX << ", " << targetY << ")" << std::endl;
-
-    if (nextTile == -1) {  // Jeœli napotkano przeszkodê
-		this->placeOnMap(map);  // Umieœæ autobus na mapie
-    }
-
-    // Jeœli jest droga (oznaczenie 1, 3, 4, 5), poruszaj siê dalej
-    if (nextTile == 1 || nextTile == 3 || nextTile == 4 || nextTile == 5) {
-        _x = nextX;  // Uaktualnij pozycjê
-        _y = nextY;  // Uaktualnij pozycjê
-    }
+		// Jeœli dojechaliœmy dok³adnie do targetX, targetY
+		if (nextX == targetX && nextY == targetY) {
+			_path.pop(); // punkt osi¹gniêty
+			if (_path.empty()) {
+				_atStop = true;
+				_stopTime = 0;
+			}
+		}
+	}
+	else {
+		std::cout << "Bus" << _id << ": Blocked at (" << nextX << ", " << nextY << ")" << std::endl;
+		// Opcjonalnie: spróbuj przeliczyæ œcie¿kê na nowo lub zostañ w miejscu
+	}
 }
 
 
-
-std::queue<std::pair<int, int>> Bus::calculatePath(std::pair<int, int> startPoint, std::pair<int, int> endPoint, const Map& map)
-{
-	std::queue<std::pair<int, int>> result;  // Kolejka do zwrócenia œcie¿ki
-	std::queue<std::pair<int, int>> q;;
-	std::map<std::pair<int, int>, std::pair<int, int>> parent;
+std::queue<std::pair<int, int>> Bus::calculatePath(std::pair<int, int> startPoint, std::pair<int, int> endPoint, const Map& map) {
+	std::queue<std::pair<int, int>> path;
+	std::map<std::pair<int, int>, std::pair<int, int>> cameFrom;
 	std::set<std::pair<int, int>> visited;
+	std::queue<std::pair<int, int>> frontier;
 
-	q.push(startPoint);
+	int width = map.getWidth();
+	int height = map.getHeight();
+
+	auto isValid = [&](int x, int y) {
+		return x >= 0 && x < width && y >= 0 && y < height &&
+			(map.getTile(x, y) == 1 || map.getTile(x, y) == 3 || map.getTile(x, y) == 4 || map.getTile(x, y) == 5);
+		};
+
+	// Start BFS
+	frontier.push(startPoint);
 	visited.insert(startPoint);
 
-	std::vector<std::pair<int, int>> directions = {
-		{0, 1}, {1, 0}, {0, -1}, {-1, 0}  // Kierunki: w prawo, w dó³, w lewo, w górê
+	const std::vector<std::pair<int, int>> directions = {
+		{1, 0}, {-1, 0}, {0, 1}, {0, -1}
 	};
 
-	while (!q.empty()) {
-		auto [x, y] = q.front(); q.pop();
-		if (x == endPoint.first && y == endPoint.second) break;
+	bool reached = false;
+	std::pair<int, int> finalPoint;
 
+	while (!frontier.empty() && !reached) {
+		auto current = frontier.front();
+		frontier.pop();
+
+		// Check if current is within +-1 of endPoint
+		if (std::abs(current.first - endPoint.first) <= 1 && std::abs(current.second - endPoint.second) <= 1) {
+			finalPoint = current;
+			reached = true;
+			break;
+		}
+
+		// Explore neighbors
 		for (auto [dx, dy] : directions) {
-			int nx = x + dx;
-			int ny = y + dy;
-			if (map.getTile(nx, ny) != -1) {  // Sprawdzamy, czy wspó³rzêdne s¹ w obrêbie mapy
-				int tile = map.getTile(nx, ny);
-				if ((tile == 1 || tile == 3 || tile == 4 || tile == 5) &&  // Sprawdzamy, czy to droga
-					visited.find({ nx, ny }) == visited.end()) {
-					q.push({ nx, ny });
-					visited.insert({ nx, ny });
-					parent[{nx, ny}] = { x, y };
-				}
+			int nx = current.first + dx;
+			int ny = current.second + dy;
+			std::pair<int, int> next = { nx, ny };
+
+			if (isValid(nx, ny) && visited.find(next) == visited.end()) {
+				frontier.push(next);
+				visited.insert(next);
+				cameFrom[next] = current;
 			}
 		}
 	}
 
-	std::pair<int, int> current = endPoint;
-	if (parent.find(current) == parent.end()) return result; // Brak œcie¿ki, zwracamy pust¹ kolejkê
-
-	std::vector<std::pair<int, int>> path;
-	while (current != startPoint) {
-		path.push_back(current);
-		current = parent[current];
+	if (!reached) {
+		std::cout << "Bus" << _id << ": No path found!" << std::endl;
+		return path;  // empty path
 	}
-	path.push_back(startPoint);  // Dodajemy punkt startowy na koñcu œcie¿ki
-	std::reverse(path.begin(), path.end());  // Odwracamy œcie¿kê, by by³a od startu do koñca
 
-	// Dodajemy ka¿dy punkt œcie¿ki do kolejki
-	for (auto& p : path) result.push(p);
+	// Reconstruct path from end to start
+	std::vector<std::pair<int, int>> reversePath;
+	auto current = finalPoint;
+	while (current != startPoint) {
+		reversePath.push_back(current);
+		current = cameFrom[current];
+	}
+	std::reverse(reversePath.begin(), reversePath.end());
 
-	return result;
+	for (auto& p : reversePath) {
+		path.push(p);
+	}
+
+	return path;
 }

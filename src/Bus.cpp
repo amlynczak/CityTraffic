@@ -14,7 +14,7 @@ void Bus::setRandomRoute(int stops, const Map& map)
 	for (int i = 0; i < stops; ++i) {
 		int x = rand() % map.getWidth();
 		int y = rand() % map.getHeight();
-		while (map.getTile(x, y) == 1) {
+		while (map.getTile(x, y) != 1) {
 			x = rand() % map.getWidth();
 			y = rand() % map.getHeight();
 		}

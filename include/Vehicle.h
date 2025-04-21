@@ -1,7 +1,7 @@
 #ifndef VEHICLE_H
 #define VEHICLE_H
 
-#include"Entity.h";
+#include"Entity.h"
 
 class Vehicle : public Entity{
 public:

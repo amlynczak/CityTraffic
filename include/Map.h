@@ -4,6 +4,8 @@
 #include<string>
 #include<vector>
 
+#include"Tile.h"
+
 class Map {
 public:
 	Map();

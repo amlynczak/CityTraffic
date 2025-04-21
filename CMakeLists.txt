@@ -62,6 +62,7 @@ add_executable(CityTraffic
     include/Car.h
     include/Bus.h
     include/EntityManager.h
+    include/Tile.h
     gui/GUI.cpp
     "src/Simulation.cpp"
     src/Vehicle.cpp

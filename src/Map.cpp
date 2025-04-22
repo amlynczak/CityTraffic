@@ -1,3 +1,4 @@
+#include "Map.h"
 #include"Map.h"
 #include<iostream>
 #include<fstream>
@@ -18,11 +19,11 @@ bool Map::loadFromFile(const std::string& filename) {
 	_grid.clear();
 	std::string line;
 	while (std::getline(file, line)) {
-		std::vector<int> row;
+		std::vector<Tile> row;
 		std::istringstream ss(line);
 		std::string tile;
 		while (std::getline(ss, tile, ',')) {
-			row.push_back(std::stoi(tile));
+			row.push_back(Tile(std::stoi(tile)));
 		}
 		_grid.push_back(row);
 	}
@@ -37,7 +38,7 @@ bool Map::loadFromFile(const std::string& filename) {
 void Map::printMap()const {
 	for (const auto& row : _grid) {
 		for (const auto& tile : row) {
-			switch (tile)
+			switch (tile.getTypeAsInt())
 			{
 			case 0:
 				std::cout << "  ";
@@ -68,6 +69,11 @@ int Map::getTile(int x, int y)const {
 		std::cerr << "Error: invalid tile coordinates: (" << x << ", " << y << ")" << std::endl;
 		return -1;
 	}
+	return _grid[y][x].getTypeAsInt();
+}
+
+Tile& Map::getTileObject(int x, int y)
+{
 	return _grid[y][x];
 }
 
@@ -85,29 +91,4 @@ int Map::getWidth()const {
 
 int Map::getHeight()const {
 	return _height;
-}
-
-std::vector<std::pair<int, int>> Map::getStartPositions()const {
-	std::vector<std::pair<int, int>> positions;
-	for (int y = 0; y < _height - 1; ++y) {
-		if (_grid[y][0] == 1 && _grid[y+1][0] == 1) {
-			positions.push_back({ 0, y + 1 });
-		}
-	}
-	for (int x = 0; x < _width - 1; ++x) {
-		if (_grid[0][x] == 1 && _grid[0][x+1] == 1) {
-			positions.push_back({ x, 0 });
-		}
-	}
-	for (int y = _height - 1; y > 1; --y) {
-		if (_grid[y][_width-1] == 1 && _grid[y - 1][_width-1] == 1) {
-			positions.push_back({ _width-1, y+1});
-		}
-	}
-	for (int x = _width - 1; x > 1; --x) {
-		if (_grid[_height - 1][x] == 1 && _grid[_height - 1][x - 1] == 1) {
-			positions.push_back({ x, _height - 1 });
-		}
-	}
-	return positions;
 }

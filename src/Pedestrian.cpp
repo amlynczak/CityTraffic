@@ -52,7 +52,7 @@ void Pedestrian::placeOnMap(const Map& map) {
 	}
 }
 
-void Pedestrian::update(float delta, const Map& map) {
+void Pedestrian::update(float delta, Map& map) {
 	float distance = 1;
 	int nextX = _x;
 	int nextY = _y;

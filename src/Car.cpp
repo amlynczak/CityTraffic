@@ -11,7 +11,7 @@ bool Car::canTravel(const Map& map, int nextX, int nextY) {
 	return true;
 }
 
-void Car::update(float delta, const Map& map) {
+void Car::update(float delta, Map& map) {
 	float ditance = 1;// _speed* delta;
 	float nextX = _x;
 	float nextY = _y;
@@ -34,7 +34,9 @@ void Car::update(float delta, const Map& map) {
 		break;
 	}
 
+	
 	int currentTile = map.getTile((int)_x, (int)_y);
+	Tile& currentTileObj = map.getTileObject((int)_x, (int)_y);
 	int nextTile = map.getTile(nextX, nextY);
 
 	std::cout << "CAR" << _id << std::endl;
@@ -42,6 +44,7 @@ void Car::update(float delta, const Map& map) {
 	std::cout << "Next tile: " << nextTile << std::endl;
 
 	if (nextTile == -1) {
+		currentTileObj.setOccupied(false);
 		switch (_dir)
 		{
 		case Direction::UP:
@@ -65,6 +68,13 @@ void Car::update(float delta, const Map& map) {
 		default:
 			break;
 		}
+		map.getTileObject((int)_x, (int)_y).setOccupied(true);
+		return;
+	}
+
+	Tile& nextTileObj = map.getTileObject((int)nextX, (int)nextY);
+	if (nextTileObj.isOccupied()) {
+		std::cout << "Car " << _id << " is already on the tile!" << std::endl;
 		return;
 	}
 
@@ -74,8 +84,10 @@ void Car::update(float delta, const Map& map) {
 	}
 
 	if (nextTile == 1) {
+		currentTileObj.setOccupied(false);
 		_x = nextX;
 		_y = nextY;
+		nextTileObj.setOccupied(true);
 		return;
 	}
 
@@ -86,14 +98,18 @@ void Car::update(float delta, const Map& map) {
 	}
 
 	if (nextTile == 3) {
+		currentTileObj.setOccupied(false);
 		_x = nextX;
 		_y = nextY;
+		nextTileObj.setOccupied(true);
 		return;
 	}
 
 	if (nextTile == 4 && currentTile == 3) {
+		currentTileObj.setOccupied(false);
 		_x = nextX;
 		_y = nextY;
+		nextTileObj.setOccupied(true);
 		int turn = rand() % 2; // 0 = prosto, 1 = w prawo
 		if (turn == 0) { // Prosto
 			return;
@@ -107,8 +123,10 @@ void Car::update(float delta, const Map& map) {
 	}
 
 	if (nextTile == 4 && currentTile == 4) {
+		currentTileObj.setOccupied(false);
 		_x = nextX;
 		_y = nextY;
+		nextTileObj.setOccupied(true);
 		int turn = rand() % 2; // 0 = prosto, 1 = w lewo
 		if (turn == 0) { // Prosto
 			return;
@@ -122,8 +140,10 @@ void Car::update(float delta, const Map& map) {
 	}
 
 	if (nextTile == 5) {
+		currentTileObj.setOccupied(false);
 		_x = nextX;
 		_y = nextY;
+		nextTileObj.setOccupied(true);
 		return;
 	}
 }

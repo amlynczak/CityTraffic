@@ -4,6 +4,8 @@
 #include<string>
 #include<vector>
 
+#include"Tile.h"
+
 class Map {
 public:
 	Map();
@@ -12,14 +14,13 @@ public:
     void printMap()const;
 
 	int getTile(int x, int y)const;
+	Tile& getTileObject(int x, int y);
 	void setTile(int x, int y, int value);
 	int getWidth()const;
 	int getHeight()const;
 
-	std::vector<std::pair<int, int>> getStartPositions()const;
-
 private:
-	std::vector<std::vector<int>> _grid;
+	std::vector<std::vector<Tile>> _grid;
 	int _width;
 	int _height;
 };

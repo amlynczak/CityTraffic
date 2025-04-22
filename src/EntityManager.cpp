@@ -18,7 +18,7 @@ void EntityManager::clearAll() {
 	_entities.clear();
 }
 
-void EntityManager::updateAll(float deltaTime, const Map& map) {
+void EntityManager::updateAll(float deltaTime, Map& map) {
 	for (auto& entity : _entities) {
 		entity->update(deltaTime, map);
 	}

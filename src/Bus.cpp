@@ -33,7 +33,7 @@ void Bus::setRoute(std::vector<std::pair<float, float>> route) {
 	_route = route;
 }
 
-void Bus::update(float delta, const Map& map) {
+void Bus::update(float delta, Map& map) {
 	if (_atStop) {
 		_stopTime += delta;
 		if (_stopTime >= 2.0f) {
@@ -80,10 +80,20 @@ void Bus::update(float delta, const Map& map) {
 		_dir = (dy > 0) ? Direction::DOWN : Direction::UP;
 	}
 
+	int currentTile = map.getTile(currentX, currentY);
 	int nextTile = map.getTile(nextX, nextY);
+	Tile& nextTileObject = map.getTileObject(nextX, nextY);
+	Tile& currentTileObject = map.getTileObject(currentX, currentY);
+
+	if (nextTileObject.isOccupied()) {
+		return;
+	}
+
 	if (nextTile == 1 || nextTile == 3 || nextTile == 4 || nextTile == 5) {
+		currentTileObject.setOccupied(false); // zwolnij aktualny kafelek
 		_x = static_cast<float>(nextX);
 		_y = static_cast<float>(nextY);
+		nextTileObject.setOccupied(true); // zajmij nowy kafelek
 
 		// Jeœli dojechaliœmy dok³adnie do targetX, targetY
 		if (nextX == targetX && nextY == targetY) {

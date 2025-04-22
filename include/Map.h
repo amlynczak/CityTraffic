@@ -14,6 +14,7 @@ public:
     void printMap()const;
 
 	int getTile(int x, int y)const;
+	Tile& getTileObject(int x, int y);
 	void setTile(int x, int y, int value);
 	int getWidth()const;
 	int getHeight()const;

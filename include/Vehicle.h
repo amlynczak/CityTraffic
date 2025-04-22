@@ -9,7 +9,7 @@ public:
 	Vehicle(int id, float x, float y, Direction dir, float speed) : Entity(id, x, y, dir), _speed(speed) {}
 	virtual ~Vehicle() = default;
 
-	virtual void update(float delta, const Map& map) = 0;
+	virtual void update(float delta, Map& map) = 0;
 
 	void placeOnMap(const Map& map) override;
 	float getSpeed() const;

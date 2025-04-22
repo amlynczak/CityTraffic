@@ -14,7 +14,7 @@ public:
 	Bus(int id, float x, float y, float velocity, Direction dir);
 	void setRandomRoute(int stops, const Map& map);
 	void setRoute(std::vector<std::pair<float, float>> route);
-	void update(float delta, const Map& map) override;
+	void update(float delta, Map& map) override;
 
 	std::queue<std::pair<int, int>> calculatePath(std::pair<int, int> startPoint, std::pair<int, int> endPoint, const Map& map);
 private:

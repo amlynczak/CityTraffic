@@ -12,7 +12,7 @@ public:
     virtual ~Entity() = default;
 
 	virtual void placeOnMap(const Map& map) = 0;
-	virtual void update(float delta, const Map& map) = 0;
+	virtual void update(float delta, Map& map) = 0;
 
 	int getId() const { return _id; }
 	float getX() const { return _x; }

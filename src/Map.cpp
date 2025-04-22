@@ -1,3 +1,4 @@
+#include "Map.h"
 #include"Map.h"
 #include<iostream>
 #include<fstream>
@@ -69,6 +70,11 @@ int Map::getTile(int x, int y)const {
 		return -1;
 	}
 	return _grid[y][x].getTypeAsInt();
+}
+
+Tile& Map::getTileObject(int x, int y)
+{
+	return _grid[y][x];
 }
 
 void Map::setTile(int x, int y, int value) {

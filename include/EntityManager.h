@@ -13,7 +13,7 @@ public:
     void addEntity(std::shared_ptr<Entity> entity);
 	void removeEntity(int id);
     void clearAll();
-    void updateAll(float deltaTime, const Map& map);
+    void updateAll(float deltaTime, Map& map);
 
 	std::vector<std::shared_ptr<Entity>>& getEntities() { return _entities; }
 	//std::shared_ptr<Entity> getEntityById(int id);

@@ -92,8 +92,25 @@ void Car::update(float delta, Map& map) {
 	}
 
 	if (nextTile == 2) {
-		//TODO: inaczej to trzeba obs³u¿yæ chyba
-		this->placeOnMap(map);
+		switch (_dir)
+		{
+		case Direction::UP:
+			_dir = Direction::LEFT;
+			break;
+		case Direction::DOWN:
+			_dir = Direction::RIGHT;
+			break;
+		case Direction::RIGHT:
+			_dir = Direction::UP;
+			break;
+		case Direction::LEFT:
+			_dir = Direction::DOWN;
+			break;
+		case Direction::NONE:
+			break;
+		default:
+			break;
+		}
 		return;
 	}
 

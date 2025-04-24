@@ -14,6 +14,8 @@ Simulation::Simulation() : _running(false)
 	}
 	_map.printMap();
 
+	initializeIntersections();
+
 	for (int i = 0; i < 20; ++i) {
 		auto car = std::make_shared<Car>(i + 1);
 		car->placeOnMap(_map);
@@ -55,6 +57,8 @@ Simulation::Simulation(int cars, int pedestrians, int buses, float cycleTime, in
 	}
 	_map.printMap();
 
+	initializeIntersections();
+
 	for (int i = 0; i < cars; ++i) {
 		auto car = std::make_shared<Car>(i + 1);
 		car->placeOnMap(_map);
@@ -74,6 +78,52 @@ Simulation::Simulation(int cars, int pedestrians, int buses, float cycleTime, in
 	}
 }
 
+void Simulation::initializeIntersections() {
+    for (int y = 0; y < _map.getHeight(); ++y) {
+        for (int x = 0; x < _map.getWidth(); ++x) {
+            // Sprawdź, czy aktualny kafelek to lewy górny róg skrzyżowania
+            if (_map.getTile(x, y) == 4 &&
+                _map.getTile(x + 1, y) == 4 &&
+                _map.getTile(x, y + 1) == 4 &&
+                _map.getTile(x + 1, y + 1) == 4) {
+                
+                Intersection intersection(15.0f); // Tworzenie skrzyżowania z domyślnym czasem cyklu
+
+                // Wykrywanie świateł wokół skrzyżowania
+                std::vector<std::pair<int, int>> lightPositions = {
+                    {x, y - 2},     // Góra
+                    {x + 1, y - 2}, // Góra (prawa strona)
+                    {x, y + 3},     // Dół
+                    {x + 1, y + 3}, // Dół (prawa strona)
+                    {x - 2, y},     // Lewo
+                    {x - 2, y + 1}, // Lewo (dolna strona)
+                    {x + 3, y},     // Prawo
+                    {x + 3, y + 1}  // Prawo (dolna strona)
+                };
+
+                for (const auto& pos : lightPositions) {
+                    int nx = pos.first;
+                    int ny = pos.second;
+
+                    if (_map.getTile(nx, ny) == 5) { // Jeśli znaleziono światło
+                        TrafficLights light(nx, ny); // Ustaw pozycję świateł
+                        light.setup();
+
+                        // Przypisz światło do odpowiedniej grupy
+                        if (nx == x || nx == x + 1) { // Góra lub dół
+                            intersection.addUpDownLight(light);
+                        } else if (ny == y || ny == y + 1) { // Lewo lub prawo
+                            intersection.addLeftRightLight(light);
+                        }
+                    }
+                }
+
+                _intersections.push_back(intersection); // Dodaj skrzyżowanie do listy
+            }
+        }
+    }
+}
+
 void Simulation::run() {
 	_running = true;
 	const float dt = 1.0;// 1.0f / 60.0f;
@@ -85,7 +135,9 @@ void Simulation::run() {
 
 void Simulation::update(float dt) {
 	_entityManager.updateAll(dt, _map);
-	//_lights.update(dt);
+	for (auto& intersection : _intersections) {
+		intersection.update(dt, _map);
+	}
 }
 
 bool Simulation::isRunning() const {

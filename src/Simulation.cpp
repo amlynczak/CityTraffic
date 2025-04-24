@@ -16,24 +16,24 @@ Simulation::Simulation() : _running(false)
 
 	initializeIntersections();
 
-	for (int i = 0; i < 20; ++i) {
+	for (int i = 0; i < 5; ++i) {
 		auto car = std::make_shared<Car>(i + 1);
 		car->placeOnMap(_map);
 		_entityManager.addEntity(car);
 	}
 
-	for (int i = 0; i < 1; ++i) {
+	for (int i = 0; i < 2; ++i) {
 		auto pedestrian = std::make_shared<Pedestrian>(2 + i + 1);
 		pedestrian->placeOnMap(_map);
 		_entityManager.addEntity(pedestrian);
 	}
 
-	for (int i = 0; i < 1; ++i) {
+	/*for (int i = 0; i < 1; ++i) {
 		auto bus = std::make_shared<Bus>(2 + 1 + i + 1);
 		bus->placeOnMap(_map);
 		bus->setRandomRoute(9, _map);
 		_entityManager.addEntity(bus);
-	}
+	}*/
 }
 
 Simulation::Simulation(int cars, int pedestrians, int buses, float cycleTime, int simulationSpeed) : _running(false)

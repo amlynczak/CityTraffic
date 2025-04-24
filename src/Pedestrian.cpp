@@ -103,6 +103,11 @@ void Pedestrian::update(float delta, Map& map) {
 		return;
 	}
 
+	Tile nextTileObject = map.getTileObject(nextX, nextY);
+	if (nextTileObject.isOccupied() || !nextTileObject.canPedestrianEnter()) {
+		return;
+	}
+
 	if (nextTile == 0) {
 		this->placeOnMap(map);
 		return;
@@ -121,7 +126,7 @@ void Pedestrian::update(float delta, Map& map) {
 
 	if (nextTile == 3 && currentTile == 2) {
 		int turn = rand() % 3; // 0 = prosto, 1 = w lewo, 2 = w prawo
-		if (turn == 0) {
+		if (turn == 0 && nextTileObject.canPedestrianEnter()) {
 			_x = nextX;
 			_y = nextY;
 		}

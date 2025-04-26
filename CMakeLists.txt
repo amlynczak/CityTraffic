@@ -56,19 +56,21 @@ add_executable(CityTraffic
     include/Vehicle.h
     include/TrafficLights.h
     include/Pedestrian.h
-    "include/Simulation.h"
+    include/Simulation.h
     gui/GUI.h
     include/Entity.h
     include/Car.h
     include/Bus.h
     include/EntityManager.h
+    include/Intersection.h
     include/Tile.h
     gui/GUI.cpp
-    "src/Simulation.cpp"
+    src/Simulation.cpp
     src/Vehicle.cpp
     src/Bus.cpp
     src/Car.cpp
     src/EntityManager.cpp
+    src/Intersection.cpp
     src/Map.cpp
     src/Pedestrian.cpp
     src/TrafficLights.cpp

@@ -22,10 +22,13 @@ public:
 	void setType(TileType type) { _type = type; }
 	bool isOccupied() const { return _isOccupied; }
 	void setOccupied(bool occupied) { _isOccupied = occupied; }
+	bool canPedestrianEnter() const { return _canPedestrianEnter; }
+	void setCanPedestrianEnter(bool canEnter) { _canPedestrianEnter = canEnter; }
 
 private:
 	TileType _type;
 	bool _isOccupied;
+	bool _canPedestrianEnter;
 };
 
 #endif // !TILE_H

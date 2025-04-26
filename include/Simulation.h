@@ -8,17 +8,20 @@
 #include "EntityManager.h"
 #include "Map.h"
 #include "TrafficLights.h"
+#include "Intersection.h"
 
 class Simulation {
 private:
     EntityManager _entityManager;
     Map _map;
     std::vector<TrafficLights> _lights;
+    std::vector<Intersection> _intersections;
     bool _running;
 
 public:
 	Simulation();
     Simulation(int cars, int pedestrians, int buses, float cycleTime, int simulationSpeed);
+	void initializeIntersections();
     void run();
     void stop();
     void update(float dt);  

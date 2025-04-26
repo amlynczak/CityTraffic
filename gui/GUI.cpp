@@ -69,108 +69,119 @@ void GUI::processEvents()
 void GUI::update() {
     static sf::Clock clock;
     float dt = 0.1;//clock.restart().asSeconds();
-    _simulation.update(dt);  // tylko jeœli chcesz symulacjê odpalaæ st¹d
+    _simulation.update(dt);  // tylko jeï¿½li chcesz symulacjï¿½ odpalaï¿½ stï¿½d
 }
 
 
 void GUI::render()
 {
-    _window.clear();
+   _window.clear();
 
-    // 1. Rysuj mapê (siatkê)
-    const Map& map = _simulation.getMap();
-    for (int y = 0; y < map.getHeight(); ++y)
-    {
-        for (int x = 0; x < map.getWidth(); ++x)
-        {
-            sf::RectangleShape tile(sf::Vector2f(20.f, 20.f));
-            tile.setPosition(x * 20.f, y * 20.f);
+   // 1. Rysuj mapï¿½ (siatkï¿½)
+   const Map& map = _simulation.getMap();
+   for (int y = 0; y < map.getHeight(); ++y)
+   {
+       for (int x = 0; x < map.getWidth(); ++x)
+       {
+           sf::RectangleShape tile(sf::Vector2f(20.f, 20.f));
+           tile.setPosition(x * 20.f, y * 20.f);
 
-            switch (map.getTile(x, y)) {
-            case 0: tile.setFillColor(sf::Color(50, 200, 50)); break; // trawa
-            case 1: 
-                tile.setFillColor(sf::Color(100, 100, 100)); // jezdnia
+           switch (map.getTile(x, y)) {
+           case 0: tile.setFillColor(sf::Color(50, 200, 50)); break; // trawa
+           case 1: 
+               tile.setFillColor(sf::Color(100, 100, 100)); // jezdnia
 
-                // Sprawdzenie poziomego pasa
-                if (x + 1 < map.getWidth() &&
-                    map.getTile(x, y) == 1 && map.getTile(x + 1, y) == 1 &&
-                    (x == 0 || map.getTile(x - 1, y) != 1) &&
-                    (x + 2 >= map.getWidth() || map.getTile(x + 2, y) != 1))
-                {
-                    if ((x + y) % 2 == 0) {
-                        sf::RectangleShape line(sf::Vector2f(2.f, 20.f));
-                        line.setFillColor(sf::Color(220, 220, 220));
-                        line.setPosition(x * 20.f + 10.f, y * 20.f);
-                        _window.draw(line);
-                    }
-                }
+               // Sprawdzenie poziomego pasa
+               if (x + 1 < map.getWidth() &&
+                   map.getTile(x, y) == 1 && map.getTile(x + 1, y) == 1 &&
+                   (x == 0 || map.getTile(x - 1, y) != 1) &&
+                   (x + 2 >= map.getWidth() || map.getTile(x + 2, y) != 1))
+               {
+                   if ((x + y) % 2 == 0) {
+                       sf::RectangleShape line(sf::Vector2f(2.f, 20.f));
+                       line.setFillColor(sf::Color(220, 220, 220));
+                       line.setPosition(x * 20.f + 10.f, y * 20.f);
+                       _window.draw(line);
+                   }
+               }
 
-                // Sprawdzenie pionowego pasa
-                if (y + 1 < map.getHeight() &&
-                    map.getTile(x, y) == 1 && map.getTile(x, y + 1) == 1 &&
-                    (y == 0 || map.getTile(x, y - 1) != 1) &&
-                    (y + 2 >= map.getHeight() || map.getTile(x, y + 2) != 1))
-                {
-                    if ((x + y) % 2 == 0) {
-                        sf::RectangleShape line(sf::Vector2f(20.f, 2.f));
-                        line.setFillColor(sf::Color(220, 220, 220));
-                        line.setPosition(x * 20.f, y * 20.f + 10.f);
-                        _window.draw(line);
-                    }
-                }
+               // Sprawdzenie pionowego pasa
+               if (y + 1 < map.getHeight() &&
+                   map.getTile(x, y) == 1 && map.getTile(x, y + 1) == 1 &&
+                   (y == 0 || map.getTile(x, y - 1) != 1) &&
+                   (y + 2 >= map.getHeight() || map.getTile(x, y + 2) != 1))
+               {
+                   if ((x + y) % 2 == 0) {
+                       sf::RectangleShape line(sf::Vector2f(20.f, 2.f));
+                       line.setFillColor(sf::Color(220, 220, 220));
+                       line.setPosition(x * 20.f, y * 20.f + 10.f);
+                       _window.draw(line);
+                   }
+               }
 
-                break; // jezdnia
-            case 2: tile.setFillColor(sf::Color(200, 200, 200)); break; // chodnik
-			case 3: tile.setFillColor(sf::Color(100, 100, 100)); break; // przejœcie dla pieszych
-			case 4: tile.setFillColor(sf::Color(100, 100, 100)); break; // skrzy¿owanie
-            default: tile.setFillColor(sf::Color::Black); break;
-            }
+               break; // jezdnia
+           case 2: tile.setFillColor(sf::Color(200, 200, 200)); break; // chodnik
+           case 3: tile.setFillColor(sf::Color(100, 100, 100)); break; // przejï¿½cie dla pieszych
+           case 4: tile.setFillColor(sf::Color(100, 100, 100)); break; // skrzyï¿½owanie
+           default: tile.setFillColor(sf::Color::Black); break;
+           }
 
-            _window.draw(tile);
+           _window.draw(tile);
+       }
+   }
+
+   // 2. Rysuj encje (samochody itd.)
+   const auto& entities = _simulation.getEntityManager().getEntities();
+   for (const auto& entity : entities)
+   {
+       sf::RectangleShape e(sf::Vector2f(20.f, 20.f));
+       e.setPosition(entity->getX() * 20.f, entity->getY() * 20.f);
+
+       if (dynamic_cast<Car*>(entity.get())) {
+           e.setSize(sf::Vector2f(15.f, 15.f)); // Samochï¿½d
+           e.setFillColor(sf::Color::Blue);
+       }
+       else if (dynamic_cast<Bus*>(entity.get())) {
+           e.setSize(sf::Vector2f(20.f, 20.f)); // Autobus
+           e.setFillColor(sf::Color::Red);
+       }
+       else if (dynamic_cast<Pedestrian*>(entity.get())) {
+           e.setSize(sf::Vector2f(10.f, 10.f)); // Pieszy
+           e.setFillColor(sf::Color::Yellow);
+       }
+       else
+           e.setFillColor(sf::Color::Magenta);
+
+       _window.draw(e);
+   }
+
+   for (const auto& intersection : _simulation.getIntersections()) {
+    for (const auto& light : intersection.getLights()) {
+        sf::CircleShape lightCircle(5.f);
+        lightCircle.setPosition(light.getX() * 20.f + 7.5f, light.getY() * 20.f + 7.5f);
+
+        switch (light.getState()) {
+        case LightState::RED:
+            lightCircle.setFillColor(sf::Color::Red);
+            break;
+        case LightState::YELLOW:
+            lightCircle.setFillColor(sf::Color::Yellow);
+            break;
+        case LightState::GREEN:
+            lightCircle.setFillColor(sf::Color::Green);
+            break;
         }
+
+        _window.draw(lightCircle);
     }
+}
 
-    // 2. Rysuj encje (samochody itd.)
-    const auto& entities = _simulation.getEntityManager().getEntities();
-    for (const auto& entity : entities)
-    {
-        sf::RectangleShape e(sf::Vector2f(20.f, 20.f));
-        e.setPosition(entity->getX() * 20.f, entity->getY() * 20.f);
+   // 4. GUI interfejs
+   _window.draw(_buttonsRectangle);
+   _window.draw(_title);
+   for (const auto& button : _buttons) _window.draw(button);
+   for (const auto& label : _buttonLabels) _window.draw(label);
 
-        if (dynamic_cast<Car*>(entity.get())) {
-            e.setSize(sf::Vector2f(15.f, 15.f)); // Samochód
-            e.setFillColor(sf::Color::Blue);
-        }
-        else if (dynamic_cast<Bus*>(entity.get())) {
-            e.setSize(sf::Vector2f(20.f, 20.f)); // Autobus
-            e.setFillColor(sf::Color::Red);
-        }
-        else if (dynamic_cast<Pedestrian*>(entity.get())) {
-            e.setSize(sf::Vector2f(10.f, 10.f)); // Pieszy
-            e.setFillColor(sf::Color::Yellow);
-        }
-        else
-            e.setFillColor(sf::Color::Magenta);
-
-        _window.draw(e);
-    }
-
-    // 3. Rysuj œwiat³a
-    /*const auto& lights = _simulation.getTrafficLights().getAllLights();
-    for (const auto& light : lights)
-    {
-        sf::CircleShape c(5.f);
-        c.setPosition(light.x * 20.f + 5.f, light.y * 20.f + 5.f);
-        c.setFillColor(light.green ? sf::Color::Green : sf::Color::Red);
-        _window.draw(c);
-    }*/
-
-    // 4. GUI interfejs
-    _window.draw(_buttonsRectangle);
-    _window.draw(_title);
-    for (const auto& button : _buttons) _window.draw(button);
-    for (const auto& label : _buttonLabels) _window.draw(label);
-
-    _window.display();
+   _window.display();
 }
 

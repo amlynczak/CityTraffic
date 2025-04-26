@@ -30,6 +30,7 @@ public:
 	Map& getMap();
 	EntityManager& getEntityManager() { return _entityManager; }
 	std::vector<TrafficLights>& getTrafficLights() { return _lights; }
+    std::vector<Intersection>& getIntersections() { return _intersections; }
 };
 
 #endif //SIMULATION_H

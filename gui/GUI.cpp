@@ -137,12 +137,18 @@ void GUI::render()
         sf::RectangleShape e(sf::Vector2f(20.f, 20.f));
         e.setPosition(entity->getX() * 20.f, entity->getY() * 20.f);
 
-        if (dynamic_cast<Car*>(entity.get()))
+        if (dynamic_cast<Car*>(entity.get())) {
+            e.setSize(sf::Vector2f(15.f, 15.f)); // Samochód
             e.setFillColor(sf::Color::Blue);
-        else if (dynamic_cast<Bus*>(entity.get()))
+        }
+        else if (dynamic_cast<Bus*>(entity.get())) {
+            e.setSize(sf::Vector2f(20.f, 20.f)); // Autobus
             e.setFillColor(sf::Color::Red);
-        else if (dynamic_cast<Pedestrian*>(entity.get()))
+        }
+        else if (dynamic_cast<Pedestrian*>(entity.get())) {
+            e.setSize(sf::Vector2f(10.f, 10.f)); // Pieszy
             e.setFillColor(sf::Color::Yellow);
+        }
         else
             e.setFillColor(sf::Color::Magenta);
 

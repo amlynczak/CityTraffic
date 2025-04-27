@@ -65,6 +65,7 @@ add_executable(CityTraffic
     include/Intersection.h
     include/Tile.h
     gui/GUI.cpp
+    src/Entity.cpp
     src/Simulation.cpp
     src/Vehicle.cpp
     src/Bus.cpp
@@ -74,6 +75,7 @@ add_executable(CityTraffic
     src/Map.cpp
     src/Pedestrian.cpp
     src/TrafficLights.cpp
+    src/Tile.cpp
 )
 
 # Dodaj katalogi nagłówków

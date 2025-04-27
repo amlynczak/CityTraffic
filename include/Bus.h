@@ -19,7 +19,7 @@ public:
 	std::queue<std::pair<int, int>> calculatePath(std::pair<int, int> startPoint, std::pair<int, int> endPoint, const Map& map);
 private:
 	std::vector<std::pair<float, float>> _route;
-	std::queue<std::pair<int, int>> _path; // Kolejka do przechowywania œcie¿ki
+	std::queue<std::pair<int, int>> _path;
 	int _currentStop;
 	float _stopTime;
 	bool _atStop;

@@ -152,3 +152,11 @@ Map& Simulation::getMap()
 void Simulation::stop() {
 	_running = false;
 }
+
+EntityManager& Simulation::getEntityManager(){
+	return _entityManager;
+}
+
+std::vector<Intersection>& Simulation::getIntersections(){
+	return _intersections;
+}

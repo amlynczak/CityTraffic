@@ -23,3 +23,7 @@ void EntityManager::updateAll(float deltaTime, Map& map) {
 		entity->update(deltaTime, map);
 	}
 }
+
+std::vector<std::shared_ptr<Entity>>& EntityManager::getEntities(){
+	return _entities;
+}

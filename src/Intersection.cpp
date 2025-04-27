@@ -1,7 +1,6 @@
 #include "Intersection.h"
 
-Intersection::Intersection(float cycleTime)
-    : timer(0.0f), cycleTime(cycleTime) {}
+Intersection::Intersection(float cycleTime) : timer(0.0f), cycleTime(cycleTime) {}
 
 void Intersection::addUpDownLight(const TrafficLights& light) {
     UpDownLights.push_back(light);
@@ -33,4 +32,19 @@ void Intersection::update(float deltaTime, Map& map) {
             light.update(0, map); // Keep UpDown lights red
         }
     }
+}
+
+
+std::vector<TrafficLights>& Intersection::getUpDownLights(){
+    return UpDownLights;
+}
+
+std::vector<TrafficLights>& Intersection::getLeftRightLights(){
+    return LeftRightLights;
+}
+
+std::vector<TrafficLights> Intersection::getLights() const { 
+    std::vector<TrafficLights> allLights = UpDownLights;
+    allLights.insert(allLights.end(), LeftRightLights.begin(), LeftRightLights.end());
+    return allLights;
 }

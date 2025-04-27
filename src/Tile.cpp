@@ -1,6 +1,6 @@
 #include "Tile.h"
 
-Tile::Tile(TileType type = TileType::INVALID) : _type(type), _isOccupied(false){
+Tile::Tile(TileType type) : _type(type), _isOccupied(false){
 	_canPedestrianEnter = (type == TileType::SIDEWALK);
 }
 

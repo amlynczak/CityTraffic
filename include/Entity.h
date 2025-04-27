@@ -7,21 +7,21 @@ enum class Direction { UP, DOWN, RIGHT, LEFT, NONE};
 
 class Entity {
 public:
-	Entity(int id) : _id(id), _x(0), _y(0), _dir(Direction::NONE) {};
-	Entity(int id, float x, float y, Direction dir) : _id(id), _x(x), _y(y), _dir(dir) {};
-    virtual ~Entity() = default;
+	Entity(int id);
+	Entity(int id, float x, float y, Direction dir);
 
+    virtual ~Entity() = default;
 	virtual void placeOnMap(const Map& map) = 0;
 	virtual void update(float delta, Map& map) = 0;
 
-	int getId() const { return _id; }
-	float getX() const { return _x; }
-	float getY() const { return _y; }
-	Direction getDir() const { return _dir; }
+	int getId()const;
+	float getX()const;
+	float getY()const;
+	Direction getDir()const;
 
-	void setX(float x) { _x = x; }
-	void setY(float y) { _y = y; }
-	void setDir(Direction dir) { _dir = dir; }
+	void setX(float x);
+	void setY(float y);
+	void setDir(Direction dir);
 
 protected:
     int _id;

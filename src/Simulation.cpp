@@ -28,12 +28,12 @@ Simulation::Simulation() : _running(false)
 		_entityManager.addEntity(pedestrian);
 	}
 
-	/*for (int i = 0; i < 1; ++i) {
+	for (int i = 0; i < 1; ++i) {
 		auto bus = std::make_shared<Bus>(2 + 1 + i + 1);
 		bus->placeOnMap(_map);
 		bus->setRandomRoute(9, _map);
 		_entityManager.addEntity(bus);
-	}*/
+	}
 }
 
 Simulation::Simulation(int cars, int pedestrians, int buses, float cycleTime, int simulationSpeed) : _running(false)
@@ -151,4 +151,12 @@ Map& Simulation::getMap()
 
 void Simulation::stop() {
 	_running = false;
+}
+
+EntityManager& Simulation::getEntityManager(){
+	return _entityManager;
+}
+
+std::vector<Intersection>& Simulation::getIntersections(){
+	return _intersections;
 }

@@ -14,7 +14,6 @@ class Simulation {
 private:
     EntityManager _entityManager;
     Map _map;
-    std::vector<TrafficLights> _lights;
     std::vector<Intersection> _intersections;
     bool _running;
 
@@ -28,8 +27,8 @@ public:
     bool isRunning() const; 
 
 	Map& getMap();
-	EntityManager& getEntityManager() { return _entityManager; }
-	std::vector<TrafficLights>& getTrafficLights() { return _lights; }
+	EntityManager& getEntityManager();
+    std::vector<Intersection>& getIntersections();
 };
 
 #endif //SIMULATION_H

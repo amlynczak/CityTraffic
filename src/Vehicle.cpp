@@ -1,6 +1,11 @@
 #include "Vehicle.h"
 #include<iostream>
 
+Vehicle::Vehicle(int id) : Entity(id) { _speed = 0; }
+
+Vehicle::Vehicle(int id, float x, float y, Direction dir, float speed) : Entity(id, x, y, dir), _speed(speed) {}
+
+
 void Vehicle::placeOnMap(const Map& map)
 {
 	srand(time(0)); // Inicjalizacja generatora liczb losowych

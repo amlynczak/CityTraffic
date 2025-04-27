@@ -12,7 +12,7 @@ void TrafficLights::setup() {
 
 void TrafficLights::update(float deltaTime, Map& map) {
 	timer += deltaTime;
-	if (state == LightState::RED && timer > 5.0f) {
+	if (state == LightState::RED && timer > 10.0f) {
 		state = LightState::GREEN;
 		map.getTileObject(x, y).setOccupied(false); // Allow cars to pass
 		for (int dx = -1; dx <= 1; ++dx) {

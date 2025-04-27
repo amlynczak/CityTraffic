@@ -6,16 +6,21 @@
 #include "Map.h"
 
 class Intersection {
+public:
+    Intersection(float cycleTime = 10.f);
+    void addUpDownLight(const TrafficLights& light);
+    void addLeftRightLight(const TrafficLights& light);
+    void update(float deltaTime, Map& map);
+
+    std::vector<TrafficLights>& getUpDownLights();
+    std::vector<TrafficLights>& getLeftRightLights();
+    std::vector<TrafficLights> getLights() const;
+
 private:
     std::vector<TrafficLights> UpDownLights;
     std::vector<TrafficLights> LeftRightLights;
     float timer;
     float cycleTime;
-public:
-    Intersection(float cycleTime = 10.f);
-    void addUpDownLight(const TrafficLights& light); // Add light to UpDown group
-    void addLeftRightLight(const TrafficLights& light); // Add light to LeftRight group
-    void update(float deltaTime, Map& map); // Update the state of the lights
 };
 
 #endif // !INTERSECTION_H

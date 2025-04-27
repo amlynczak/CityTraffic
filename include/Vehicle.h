@@ -5,10 +5,10 @@
 
 class Vehicle : public Entity{
 public:
-	Vehicle(int id) : Entity(id) { _speed = 0; }
-	Vehicle(int id, float x, float y, Direction dir, float speed) : Entity(id, x, y, dir), _speed(speed) {}
+	Vehicle(int id);
+	Vehicle(int id, float x, float y, Direction dir, float speed);
+	
 	virtual ~Vehicle() = default;
-
 	virtual void update(float delta, Map& map) = 0;
 
 	void placeOnMap(const Map& map) override;

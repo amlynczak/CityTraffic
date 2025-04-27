@@ -13,7 +13,7 @@ void TrafficLights::setup(Map& map) {
 
 void TrafficLights::update(float deltaTime, Map& map) {
 	timer += deltaTime;
-	if (state == LightState::RED && timer > 10.0f) {
+	if (state == LightState::RED && timer > 12.0f) {
 		state = LightState::GREEN;
 		map.getTileObject(x, y).setOccupied(false); // Allow cars to pass
 		for (int dx = -1; dx <= 1; ++dx) {
@@ -54,6 +54,17 @@ LightState TrafficLights::getState() const {
 void TrafficLights::setPosition(int x, int y) {
 	this->x = x;
 	this->y = y;
+}
+
+void TrafficLights::setState(LightState state, Map& map) {
+	this->state = state;
+	if (state == LightState::RED || state == LightState::YELLOW) {
+		map.getTileObject(x, y).setOccupied(true); // Block cars from passing
+	}
+	else if (state == LightState::GREEN) {
+		map.getTileObject(x, y).setOccupied(false); // Allow cars to pass
+	}
+	timer = 0.0f; // Reset timer when state is set manually
 }
 
 int TrafficLights::getX() const {

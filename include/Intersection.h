@@ -21,6 +21,7 @@ private:
     std::vector<TrafficLights> LeftRightLights;
     float timer;
     float cycleTime;
+    bool upDownGreen;
 };
 
 #endif // !INTERSECTION_H

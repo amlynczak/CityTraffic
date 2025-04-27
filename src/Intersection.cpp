@@ -1,6 +1,6 @@
 #include "Intersection.h"
 
-Intersection::Intersection(float cycleTime) : timer(0.0f), cycleTime(cycleTime) {}
+Intersection::Intersection(float cycleTime) : timer(0.0f), cycleTime(cycleTime), upDownGreen(true) {}
 
 void Intersection::addUpDownLight(const TrafficLights& light) {
     UpDownLights.push_back(light);
@@ -15,21 +15,26 @@ void Intersection::update(float deltaTime, Map& map) {
 
     if (timer >= cycleTime) {
         timer = 0.0f;
+        upDownGreen = !upDownGreen; // Switch active lights
     }
 
-    if (timer < cycleTime / 2) {
+    if (upDownGreen) {
         for (auto& light : UpDownLights) {
-            light.update(deltaTime, map); // Update UpDown lights
+            light.setState(LightState::GREEN, map); // Force UpDown lights to green
+            //light.update(deltaTime, map);     // Update logic for green lights
         }
         for (auto& light : LeftRightLights) {
-            light.update(0, map); // Keep LeftRight lights red
+            light.setState(LightState::RED, map);  // Force LeftRight lights to red
+            //light.update(0, map);             // No update needed for red lights
         }
     } else {
         for (auto& light : LeftRightLights) {
-            light.update(deltaTime, map); // Update LeftRight lights
+            light.setState(LightState::GREEN, map); // Force LeftRight lights to green
+            //light.update(deltaTime, map);     // Update logic for green lights
         }
         for (auto& light : UpDownLights) {
-            light.update(0, map); // Keep UpDown lights red
+            light.setState(LightState::RED, map);  // Force UpDown lights to red
+            //light.update(0, map);             // No update needed for red lights
         }
     }
 }

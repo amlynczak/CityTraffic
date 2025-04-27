@@ -20,6 +20,7 @@ public:
     LightState getState() const;
 
     void setPosition(int x, int y);
+    void setState(LightState state, Map& map);
     int getX() const;
     int getY() const;
 };

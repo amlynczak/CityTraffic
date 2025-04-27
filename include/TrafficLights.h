@@ -15,7 +15,7 @@ private:
 public:
     TrafficLights();
     TrafficLights(int x, int y); 
-    void setup();
+    void setup(Map& map);
     void update(float deltaTime, Map& map);
     LightState getState() const;
 

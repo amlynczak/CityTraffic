@@ -5,8 +5,9 @@ TrafficLights::TrafficLights() : state(LightState::RED), timer(0.0f), x(0), y(0)
 
 TrafficLights::TrafficLights(int x, int y) : state(LightState::RED), timer(0.0f), x(x), y(y) {}
 
-void TrafficLights::setup() {
+void TrafficLights::setup(Map& map) {
 	state = LightState::RED;
+	map.getTileObject(x, y).setOccupied(true); // Block cars from passing
 	timer = 0.0f;
 }
 

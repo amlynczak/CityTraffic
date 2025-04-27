@@ -107,7 +107,7 @@ void Simulation::initializeIntersections() {
 
                     if (_map.getTile(nx, ny) == 5) { // Jeśli znaleziono światło
                         TrafficLights light(nx, ny); // Ustaw pozycję świateł
-                        light.setup();
+                        light.setup(_map);
 
                         // Przypisz światło do odpowiedniej grupy
                         if (nx == x || nx == x + 1) { // Góra lub dół

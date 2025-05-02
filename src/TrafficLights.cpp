@@ -60,9 +60,25 @@ void TrafficLights::setState(LightState state, Map& map) {
 	this->state = state;
 	if (state == LightState::RED || state == LightState::YELLOW) {
 		map.getTileObject(x, y).setOccupied(true); // Block cars from passing
+		for (int dx = -1; dx <= 1; ++dx) {
+			for (int dy = -1; dy <= 1; ++dy) {
+				if (dx == 0 && dy == 0) continue; // Skip the current position
+				if (map.getTile(x + dx, y + dy) == 3) {
+					map.getTileObject(x + dx, y + dy).setCanPedestrianEnter(true);
+				}
+			}
+		}
 	}
 	else if (state == LightState::GREEN) {
 		map.getTileObject(x, y).setOccupied(false); // Allow cars to pass
+		for (int dx = -1; dx <= 1; ++dx) {
+			for (int dy = -1; dy <= 1; ++dy) {
+				if (dx == 0 && dy == 0) continue; // Skip the current position
+				if (map.getTile(x + dx, y + dy) == 3) {
+					map.getTileObject(x + dx, y + dy).setCanPedestrianEnter(false);
+				}
+			}
+		}
 	}
 	timer = 0.0f; // Reset timer when state is set manually
 }

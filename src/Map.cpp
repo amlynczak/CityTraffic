@@ -92,3 +92,13 @@ int Map::getWidth()const {
 int Map::getHeight()const {
 	return _height;
 }
+
+void Map::resetMap() {
+	for (int y = 0; y < _height; ++y) {
+		for (int x = 0; x < _width; ++x) {
+			_grid[y][x].setOccupied(false);
+			if(_grid[y][x].getTypeAsInt() == 2) _grid[y][x].setCanPedestrianEnter(true);
+			else _grid[y][x].setCanPedestrianEnter(false);
+		}
+	}
+}

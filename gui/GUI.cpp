@@ -63,8 +63,59 @@ void GUI::processEvents()
     {
         if (event.type == sf::Event::Closed)
             _window.close();
+
+        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+        {
+            sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+
+            for (size_t i = 0; i < _buttons.size(); ++i)
+            {
+                if (_buttons[i].getGlobalBounds().contains(mousePos))
+                {
+                    handleButtonClick(i);
+                }
+            }
+        }
     }
 }
+
+void GUI::handleButtonClick(size_t buttonIndex)
+{
+    switch (buttonIndex)
+    {
+    case 0: // Start/Stop
+        if (_simulation.isRunning())
+            _simulation.stop();
+        else
+            _simulation.run();
+        break;
+
+    case 1: // Reset
+        _simulation.reset(); // Przykładowe wartości: 5 samochodów, 2 pieszych, 1 autobus, cykl 15s, prędkość 1x
+        break;
+
+    case 2: // Number of cars
+        // Zwiększ liczbę samochodów w symulacji
+        break;
+
+    case 3: // Number of pedestrians
+        // Zwiększ liczbę pieszych w symulacji
+        break;
+
+    case 4: // Cycle of trafficLights
+        // Zmień cykl świateł
+        break;
+
+    case 5: // Simulation speed
+        // Zmień prędkość symulacji
+        break;
+
+    default:
+        break;
+    }
+}
+
+
 
 void GUI::update() {
     static sf::Clock clock;

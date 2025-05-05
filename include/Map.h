@@ -18,6 +18,7 @@ public:
 	void setTile(int x, int y, int value);
 	int getWidth()const;
 	int getHeight()const;
+	void resetMap();
 
 private:
 	std::vector<std::vector<Tile>> _grid;
@@ -25,4 +26,4 @@ private:
 	int _height;
 };
 
-#endif //MAP_H
+#endif // MAP_H

@@ -27,3 +27,12 @@ void EntityManager::updateAll(float deltaTime, Map& map) {
 std::vector<std::shared_ptr<Entity>>& EntityManager::getEntities(){
 	return _entities;
 }
+
+std::shared_ptr<Entity> EntityManager::getEntityById(int id) {
+	for (const auto& entity : _entities) {
+		if (entity->getId() == id) {
+			return entity;
+		}
+	}
+	return nullptr;
+}

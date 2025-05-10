@@ -32,7 +32,19 @@ public:
    void reset();
    void resume();
    void update(float dt);  
-   bool isRunning() const; 
+   bool isRunning() const;
+
+   int getNumCars() const;
+   int getNumPedestrians() const;
+   int getNumBuses() const;
+   float getCycleTime() const;
+   int getSimulationSpeed() const;
+
+   void setNumCars(int num);
+   void setNumPedestrians(int num);
+   void setNumBuses(int num);
+   void setCycleTime(float time);
+   void setSimulationSpeed(int speed);
 
    Map& getMap();
    EntityManager& getEntityManager();

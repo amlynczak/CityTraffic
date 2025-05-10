@@ -30,6 +30,7 @@ private:
     void update();
     void render();
     void handleButtonClick(size_t buttonIndex);
+    void adjustParameter(size_t index, int delta);
 
     // New helper method for adjustable parameters
     //void handleAdjustableParameterClick(const sf::Vector2f& mousePos);

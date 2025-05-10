@@ -42,10 +42,10 @@ GUI::GUI(Simulation& sim) : _window(sf::VideoMode(1600, 800), "CityTraffic"), _s
 
     // Initialize adjustable parameter buttons
     _adjustableParameters = {
-        {"Number of cars", 5},
-        {"Number of pedestrians", 10},
-        {"Cycle of trafficLights", 15},
-        {"Simulation speed", 1}
+        {"Number of cars", _simulation.getNumCars()},
+        {"Number of pedestrians", _simulation.getNumPedestrians()},
+        {"Cycle of trafficLights", static_cast<int>(_simulation.getCycleTime())},
+        {"Simulation speed", _simulation.getSimulationSpeed()}
     };
 
     float yOffset = 300.f; // Start below the Reset button
@@ -110,6 +110,22 @@ void GUI::processEvents()
                     handleButtonClick(i);
                 }
             }
+
+            for (size_t i = 0; i < _minusButtons.size(); ++i)
+            {
+                if (_minusButtons[i].getGlobalBounds().contains(mousePos))
+                {
+                    adjustParameter(i, -1);
+                }
+            }
+
+            for (size_t i = 0; i < _plusButtons.size(); ++i)
+            {
+                if (_plusButtons[i].getGlobalBounds().contains(mousePos))
+                {
+                    adjustParameter(i, 1);
+                }
+            }
         }
     }
 }
@@ -129,28 +145,43 @@ void GUI::handleButtonClick(size_t buttonIndex)
         _simulation.reset(); // Przykładowe wartości: 5 samochodów, 2 pieszych, 1 autobus, cykl 15s, prędkość 1x
         break;
 
-    case 2: // Number of cars
-        // Zwiększ liczbę samochodów w symulacji
-        break;
-
-    case 3: // Number of pedestrians
-        // Zwiększ liczbę pieszych w symulacji
-        break;
-
-    case 4: // Cycle of trafficLights
-        // Zmień cykl świateł
-        break;
-
-    case 5: // Simulation speed
-        // Zmień prędkość symulacji
-        break;
-
     default:
         break;
     }
 }
 
+void GUI::adjustParameter(size_t index, int delta)
+{
+    if (index < _adjustableParameters.size())
+    {
+        auto& param = _adjustableParameters[index];
+        if(param.second + delta >= 0) // Ensure non-negative values
+        {
+            param.second += delta;
+        }
 
+        // Update the simulation parameter based on the index
+        switch (index)
+        {
+        case 0: // Number of cars
+            _simulation.setNumCars(param.second);
+            break;
+        case 1: // Number of pedestrians
+            _simulation.setNumPedestrians(param.second);
+            break;
+        case 2: // Cycle of traffic lights
+            _simulation.setCycleTime(static_cast<float>(param.second));
+            break;
+        case 3: // Simulation speed
+            _simulation.setSimulationSpeed(param.second);
+            break;
+        default:
+            break;
+        }
+        // Update the corresponding value text
+        _valueTexts[index].setString(std::to_string(param.second > 0 ? param.second : 0));
+    }
+}
 
 void GUI::update() {
     static sf::Clock clock;
@@ -184,7 +215,7 @@ void GUI::render()
                    (x + 2 >= map.getWidth() || map.getTile(x + 2, y) != 1))
                {
                    if ((x + y) % 2 == 0) {
-                       sf::RectangleShape line(sf::Vector2f(2.f, 20.f));
+                       sf::RectangleShape line(sf::Vector2f(5.f, 20.f));
                        line.setFillColor(sf::Color(220, 220, 220));
                        line.setPosition(x * 20.f + 10.f, y * 20.f);
                        _window.draw(line);
@@ -198,7 +229,7 @@ void GUI::render()
                    (y + 2 >= map.getHeight() || map.getTile(x, y + 2) != 1))
                {
                    if ((x + y) % 2 == 0) {
-                       sf::RectangleShape line(sf::Vector2f(20.f, 2.f));
+                       sf::RectangleShape line(sf::Vector2f(20.f, 5.f));
                        line.setFillColor(sf::Color(220, 220, 220));
                        line.setPosition(x * 20.f, y * 20.f + 10.f);
                        _window.draw(line);

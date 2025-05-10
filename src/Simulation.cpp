@@ -16,20 +16,20 @@ Simulation::Simulation() : _running(false), _numCars(5), _numPedestrians(2), _nu
 
 	initializeIntersections();
 
-	for (int i = 0; i < 5; ++i) {
+	for (int i = 0; i < _numCars; ++i) {
 		auto car = std::make_shared<Car>(i + 1);
 		car->placeOnMap(_map);
 		_entityManager.addEntity(car);
 	}
 
 	for (int i = 0; i < 2; ++i) {
-		auto pedestrian = std::make_shared<Pedestrian>(2 + i + 1);
+		auto pedestrian = std::make_shared<Pedestrian>(_numCars + i + 1);
 		pedestrian->placeOnMap(_map);
 		_entityManager.addEntity(pedestrian);
 	}
 
 	for (int i = 0; i < 1; ++i) {
-		auto bus = std::make_shared<Bus>(2 + 1 + i + 1);
+		auto bus = std::make_shared<Bus>(_numCars + _numPedestrians + i + 1);
 		bus->placeOnMap(_map);
 		bus->setRandomRoute(9, _map);
 		_entityManager.addEntity(bus);
@@ -134,9 +134,10 @@ void Simulation::run() {
 }
 
 void Simulation::update(float dt) {
-	_entityManager.updateAll(dt, _map);
+	float adjustedDt = dt * _simulationSpeed;
+	_entityManager.updateAll(adjustedDt, _map);
 	for (auto& intersection : _intersections) {
-		intersection.update(dt, _map);
+		intersection.update(adjustedDt, _map);
 	}
 }
 
@@ -188,4 +189,97 @@ void Simulation::reset() {
 
 void Simulation::resume() {
 	_running = true;
+}
+
+int Simulation::getNumCars() const{
+	   return _numCars;
+}
+
+int Simulation::getNumPedestrians() const{
+	   return _numPedestrians;
+}
+
+int Simulation::getNumBuses() const{
+	   return _numBuses;
+}
+
+float Simulation::getCycleTime() const{
+	   return _cycleTime;
+}
+
+int Simulation::getSimulationSpeed() const{
+	   return _simulationSpeed;
+}
+
+void Simulation::setNumCars(int num) {
+	if (num < 0) {
+		return;
+	}
+	else if (num > _numCars) {
+		for (int i = _numCars; i < num; ++i) {
+			auto car = std::make_shared<Car>(i + 1);
+			car->placeOnMap(_map);
+			_entityManager.addEntity(car);
+		}
+		_numCars = num;
+	}
+	else if (num < _numCars) {
+		for (int i = num; i < _numCars; ++i) {
+			int x = _entityManager.getEntityById(i + 1)->getX();
+			int y = _entityManager.getEntityById(i + 1)->getY();
+			_map.getTileObject(x, y).setOccupied(false);
+			_entityManager.removeEntity(i + 1);
+		}
+		_numCars = num;
+	}
+}
+
+void Simulation::setNumPedestrians(int num) {
+	if (num < 0) {
+		return;
+	}
+	else if (num > _numPedestrians) {
+		for (int i = _numPedestrians; i < num; ++i) {
+			auto pedestrian = std::make_shared<Pedestrian>(_numCars + i + 1);
+			pedestrian->placeOnMap(_map);
+			_entityManager.addEntity(pedestrian);
+		}
+	}
+	else if (num < _numPedestrians) {
+		for (int i = num; i < _numPedestrians; ++i) {
+			_entityManager.removeEntity(_numCars + i + 1);
+		}
+	}
+	_numPedestrians = num;
+}
+
+void Simulation::setNumBuses(int num) {
+	if (num < 0) {
+		return;
+	}
+	else if (num > _numBuses) {
+		for (int i = _numBuses; i < num; ++i) {
+			auto bus = std::make_shared<Bus>(_numCars + _numPedestrians + i + 1);
+			bus->placeOnMap(_map);
+			bus->setRandomRoute(9, _map);
+			_entityManager.addEntity(bus);
+		}
+	}
+	else if (num < _numBuses) {
+		for (int i = num; i < _numBuses; ++i) {
+			int x = _entityManager.getEntityById(_numCars + _numPedestrians + i + 1)->getX();
+			int y = _entityManager.getEntityById(_numCars + _numPedestrians + i + 1)->getY();
+			_map.getTileObject(x, y).setOccupied(false);
+			_entityManager.removeEntity(_numCars + _numPedestrians + i + 1);
+		}
+	}
+	_numBuses = num;
+}
+
+void Simulation::setCycleTime(float time) {
+	_cycleTime = time;
+}
+
+void Simulation::setSimulationSpeed(int speed) {
+	_simulationSpeed = speed;
 }

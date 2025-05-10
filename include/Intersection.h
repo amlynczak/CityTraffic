@@ -16,6 +16,8 @@ public:
     std::vector<TrafficLights>& getLeftRightLights();
     std::vector<TrafficLights> getLights() const;
 
+    void setCycleTime(float time);
+
 private:
     std::vector<TrafficLights> UpDownLights;
     std::vector<TrafficLights> LeftRightLights;

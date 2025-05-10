@@ -277,9 +277,18 @@ void Simulation::setNumBuses(int num) {
 }
 
 void Simulation::setCycleTime(float time) {
+	if (time <= 0) {
+		return;
+	}
+	for (auto& intersection : _intersections) {
+		intersection.setCycleTime(time);
+	}
 	_cycleTime = time;
 }
 
 void Simulation::setSimulationSpeed(int speed) {
+	if (speed < 0) {
+		return;
+	}
 	_simulationSpeed = speed;
 }

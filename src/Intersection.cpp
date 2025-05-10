@@ -53,3 +53,7 @@ std::vector<TrafficLights> Intersection::getLights() const {
     allLights.insert(allLights.end(), LeftRightLights.begin(), LeftRightLights.end());
     return allLights;
 }
+
+void Intersection::setCycleTime(float time) {
+    cycleTime = time;
+}

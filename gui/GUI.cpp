@@ -9,41 +9,76 @@
 
 GUI::GUI(Simulation& sim) : _window(sf::VideoMode(1600, 800), "CityTraffic"), _simulation(sim)
 {
-	if (!_font.loadFromFile("../../../../resources/Overpass-Black.ttf"))
-	{
-		std::abort();
-	}
+    if (!_font.loadFromFile("../../../../resources/Overpass-Black.ttf"))
+    {
+        std::abort();
+    }
 
     _buttonsRectangle.setSize(sf::Vector2f(400.f, 800.f));
     _buttonsRectangle.setFillColor(sf::Color::White);
     _buttonsRectangle.setPosition(1200.f, 0.f);
 
-	_title.setString("CityTraffic");
-	_title.setFont(_font);
-	_title.setCharacterSize(48);
-	_title.setFillColor(sf::Color::Black);
-	_title.setPosition(1250.f, 50.f);
+    _title.setString("CityTraffic");
+    _title.setFont(_font);
+    _title.setCharacterSize(48);
+    _title.setFillColor(sf::Color::Black);
+    _title.setPosition(1250.f, 50.f);
 
-	_buttonLabels.resize(6);
-	_buttonLabels[0].setString("Start/Stop");
-	_buttonLabels[1].setString("Reset");
-	_buttonLabels[2].setString("Number of cars");
-	_buttonLabels[3].setString("Number of pedestrians");
-	_buttonLabels[4].setString("Cycle of trafficLights");
-	_buttonLabels[5].setString("Simulation speed");
+    // Initialize Start/Stop and Reset buttons
+    _buttonLabels.resize(2);
+    _buttonLabels[0].setString("Start/Stop");
+    _buttonLabels[1].setString("Reset");
 
-	for (size_t i = 0; i < _buttonLabels.size(); i++)
-	{
-		_buttons.push_back(sf::RectangleShape(sf::Vector2f(300.f, 50.f)));
-		_buttons[i].setFillColor(sf::Color::Blue);
-		_buttons[i].setPosition(1250.f, 150.f + 100.f * i);
-		_buttonLabels[i].setFont(_font);
-		_buttonLabels[i].setCharacterSize(24);
-		_buttonLabels[i].setFillColor(sf::Color::White);
-		_buttonLabels[i].setPosition(1250.f, 150.f + 100.f * i);
-	}
+    for (size_t i = 0; i < 2; i++)
+    {
+        _buttons.push_back(sf::RectangleShape(sf::Vector2f(300.f, 50.f)));
+        _buttons[i].setFillColor(sf::Color::Blue);
+        _buttons[i].setPosition(1250.f, 125.f + 100.f * i);
+        _buttonLabels[i].setFont(_font);
+        _buttonLabels[i].setCharacterSize(24);
+        _buttonLabels[i].setFillColor(sf::Color::White);
+        _buttonLabels[i].setPosition(1250.f, 125.f + 100.f * i);
+    }
 
+    // Initialize adjustable parameter buttons
+    _adjustableParameters = {
+        {"Number of cars", 5},
+        {"Number of pedestrians", 10},
+        {"Cycle of trafficLights", 15},
+        {"Simulation speed", 1}
+    };
 
+    float yOffset = 300.f; // Start below the Reset button
+    for (auto& param : _adjustableParameters)
+    {
+        sf::Text label;
+        label.setString(param.first);
+        label.setFont(_font);
+        label.setCharacterSize(24);
+        label.setFillColor(sf::Color::Black);
+        label.setPosition(1250.f, yOffset);
+        _parameterLabels.push_back(label);
+
+        sf::RectangleShape minusButton(sf::Vector2f(50.f, 50.f));
+        minusButton.setFillColor(sf::Color::Blue);
+        minusButton.setPosition(1250.f, yOffset + 40.f);
+        _minusButtons.push_back(minusButton);
+
+        sf::Text valueText;
+        valueText.setString(std::to_string(param.second));
+        valueText.setFont(_font);
+        valueText.setCharacterSize(24);
+        valueText.setFillColor(sf::Color::Black);
+        valueText.setPosition(1310.f, yOffset + 50.f);
+        _valueTexts.push_back(valueText);
+
+        sf::RectangleShape plusButton(sf::Vector2f(50.f, 50.f));
+        plusButton.setFillColor(sf::Color::Blue);
+        plusButton.setPosition(1370.f, yOffset + 40.f);
+        _plusButtons.push_back(plusButton);
+
+        yOffset += 120.f;
+    }
 }
 
 void GUI::run()
@@ -232,6 +267,37 @@ void GUI::render()
    _window.draw(_title);
    for (const auto& button : _buttons) _window.draw(button);
    for (const auto& label : _buttonLabels) _window.draw(label);
+
+   for (size_t i = 0; i < _parameterLabels.size(); ++i)
+    {
+        _window.draw(_parameterLabels[i]);
+        _window.draw(_minusButtons[i]);
+        _window.draw(_plusButtons[i]);
+        _window.draw(_valueTexts[i]);
+
+        sf::Text minusSymbol;
+        minusSymbol.setString("-");
+        minusSymbol.setFont(_font);
+        minusSymbol.setCharacterSize(24);
+        minusSymbol.setFillColor(sf::Color::White);
+        minusSymbol.setPosition(
+            _minusButtons[i].getPosition().x + 15.f, // Wyśrodkowanie w przycisku
+            _minusButtons[i].getPosition().y + 10.f
+        );
+
+        sf::Text plusSymbol;
+        plusSymbol.setString("+");
+        plusSymbol.setFont(_font);
+        plusSymbol.setCharacterSize(24);
+        plusSymbol.setFillColor(sf::Color::White);
+        plusSymbol.setPosition(
+            _plusButtons[i].getPosition().x + 15.f, // Wyśrodkowanie w przycisku
+            _plusButtons[i].getPosition().y + 10.f
+        );
+
+        _window.draw(minusSymbol);
+        _window.draw(plusSymbol);
+    }
 
    _window.display();
 }

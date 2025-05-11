@@ -261,6 +261,23 @@ void GUI::render()
        else if (dynamic_cast<Bus*>(entity.get())) {
            e.setSize(sf::Vector2f(20.f, 20.f)); // Autobus
            e.setFillColor(sf::Color::Red);
+
+           const auto& bus = dynamic_cast<Bus*>(entity.get());
+           for (const auto& stop : bus->getRoute()) {
+                int stopX = static_cast<int>(stop.first);
+                int stopY = static_cast<int>(stop.second);
+                std::vector<std::pair<int, int>> dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+                for(const auto& dir : dirs) {
+                    int newX = stopX + dir.first;
+                    int newY = stopY + dir.second;
+                    if (map.getTile(newX, newY) == 2) {
+                        sf::RectangleShape line(sf::Vector2f(5.f, 18.f));
+                        line.setFillColor(sf::Color::Black);
+                        line.setPosition(newX * 20.f + 10.f, newY * 20.f);
+                        _window.draw(line);
+                    }
+                }
+           }
        }
        else if (dynamic_cast<Pedestrian*>(entity.get())) {
            e.setSize(sf::Vector2f(10.f, 10.f)); // Pieszy

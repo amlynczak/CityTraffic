@@ -3,26 +3,83 @@
 
 #include "Map.h"
 
+/**
+ * @brief Typ wyliczeniowy reprezentujący stan świateł
+ * 
+ */
 enum class LightState { RED, GREEN, YELLOW };
 
+/**
+ * @brief Klasa reprezentująca światła drogowe
+ * 
+ */
 class TrafficLights {
-private:
-    LightState state;
-    float timer;
-    int x;
-	int y;
-
 public:
+    /**
+     * @brief Konstruktor domyślny
+     * 
+     */
     TrafficLights();
+    /**
+     * @brief Konstruktor z parametrami
+     * 
+     * @param x Współrzędna x
+     * @param y Współrzędna y
+     */
     TrafficLights(int x, int y); 
+    /**
+     * @brief Funkcja ustawiająca stan świateł
+     * 
+     * @param map Mapa, na której znajdują się światła
+     */
     void setup(Map& map);
-    void update(float deltaTime, Map& map);
+    /**
+     * @brief Funkcja zwracająca stan świateł
+     * 
+     * @return Stan świateł
+     */
     LightState getState() const;
-
-    void setPosition(int x, int y);
+    /**
+     * @brief Funkcja ustawiająca stan świateł
+     * 
+     * @param state Stan, na który mają być ustawione światła
+     * @param map Mapa, na której znajdują się światła
+     */
     void setState(LightState state, Map& map);
+    /**
+     * @brief Funkcja zwracająca współrzędną x
+     * 
+     * @return Współrzędna x
+     */
     int getX() const;
+    /**
+     * @brief Funkcja zwracająca współrzędną y
+     * 
+     * @return Współrzędna y
+     */
     int getY() const;
+
+private:
+    /**
+     * @brief Stan świateł
+     * 
+     */
+    LightState state;
+    /**
+     * @brief Czas trwania stanu świateł
+     * 
+     */
+    float timer;
+    /**
+     * @brief Współrzędna x
+     * 
+     */
+    int x;
+    /**
+     * @brief Współrzędna y
+     * 
+     */
+	int y;
 };
 
 #endif //TRAFFICLIGHTS_H

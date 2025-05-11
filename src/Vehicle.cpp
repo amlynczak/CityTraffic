@@ -1,10 +1,9 @@
 #include "Vehicle.h"
 #include<iostream>
 
-Vehicle::Vehicle(int id) : Entity(id) { _speed = 0; }
+Vehicle::Vehicle(int id) : Entity(id){}
 
-Vehicle::Vehicle(int id, float x, float y, Direction dir, float speed) : Entity(id, x, y, dir), _speed(speed) {}
-
+Vehicle::Vehicle(int id, float x, float y, Direction dir) : Entity(id, x, y, dir){}
 
 void Vehicle::placeOnMap(const Map& map)
 {
@@ -56,14 +55,4 @@ void Vehicle::placeOnMap(const Map& map)
 		_dir = Direction::NONE;
 		break;
 	}
-}
-
-void Vehicle::setSpeed(float speed)
-{
-	_speed = speed;
-}
-
-float Vehicle::getSpeed() const
-{
-	return _speed;
 }

@@ -77,14 +77,6 @@ Tile& Map::getTileObject(int x, int y)
 	return _grid[y][x];
 }
 
-void Map::setTile(int x, int y, int value) {
-	if (x < 0 || x >= _width || y < 0 || y >= _height) {
-		std::cerr << "Error: invalid tile coordinates: (" << x << ", " << y << ")" << std::endl;
-		return;
-	}
-	_grid[y][x] = value;
-}
-
 int Map::getWidth()const {
 	return _width;
 }

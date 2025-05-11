@@ -3,7 +3,7 @@
 
 Bus::Bus(int id) : Vehicle(id), _currentStop(0), _stopTime(0), _atStop(false), _path() {}
 
-Bus::Bus(int id, float x, float y, float velocity, Direction dir) : Vehicle(id, x, y, dir, velocity), _currentStop(0), _stopTime(0), _atStop(false) {}
+Bus::Bus(int id, float x, float y, Direction dir) : Vehicle(id, x, y, dir), _currentStop(0), _stopTime(0), _atStop(false) {}
 
 void Bus::setRandomRoute(int stops, const Map& map)
 {

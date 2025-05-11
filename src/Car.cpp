@@ -2,7 +2,7 @@
 #include<iostream>
 #include<stdlib.h>
 
-Car::Car(int id, float x, float y, float speed, Direction dir) : Vehicle(id, x, y, dir, speed) {}
+Car::Car(int id, float x, float y, Direction dir) : Vehicle(id, x, y, dir) {}
 Car::Car(int id) : Vehicle(id) {}
 
 bool Car::canTravel(const Map& map, int nextX, int nextY) {
@@ -12,7 +12,7 @@ bool Car::canTravel(const Map& map, int nextX, int nextY) {
 }
 
 void Car::update(float delta, Map& map) {
-	float ditance = 1;// _speed* delta;
+	float ditance = 1;
 	float nextX = _x;
 	float nextY = _y;
 
@@ -131,7 +131,7 @@ void Car::update(float delta, Map& map) {
 		if (turn == 0) { // Prosto
 			return;
 		}
-		else if (turn == 1) { // Skrêt w prawo
+		else if (turn == 1) { // Skrï¿½t w prawo
 			if (_dir == Direction::UP) _dir = Direction::RIGHT;
 			else if (_dir == Direction::DOWN) _dir = Direction::LEFT;
 			else if (_dir == Direction::LEFT) _dir = Direction::UP;
@@ -148,7 +148,7 @@ void Car::update(float delta, Map& map) {
 		if (turn == 0) { // Prosto
 			return;
 		}
-		else if (turn == 1) { // Skrêt w lewo
+		else if (turn == 1) { // Skrï¿½t w lewo
 			if (_dir == Direction::UP) _dir = Direction::LEFT;
 			else if (_dir == Direction::DOWN) _dir = Direction::RIGHT;
 			else if (_dir == Direction::LEFT) _dir = Direction::DOWN;

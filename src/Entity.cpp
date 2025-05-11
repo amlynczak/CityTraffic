@@ -16,19 +16,3 @@ float Entity::getX() const {
 float Entity::getY() const {
     return _y;
 }
-
-Direction Entity::getDir() const {
-    return _dir;
-}
-
-void Entity::setX(float x){
-    _x = x;
-}
-
-void Entity::setY(float y){
-    _y = y;
-}
-
-void Entity::setDir(Direction dir){
-    _dir = dir;
-}

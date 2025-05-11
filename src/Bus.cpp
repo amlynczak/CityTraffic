@@ -136,6 +136,7 @@ void Bus::update(float delta, Map& map) {
 	}
 	else {
 		std::cout << "Bus" << _id << ": Blocked at (" << nextX << ", " << nextY << ")" << std::endl;
+		// Opcjonalnie: spr�buj przeliczy� �cie�k� na nowo lub zosta� w miejscu
 	}
 }
 
@@ -239,7 +240,7 @@ std::queue<std::pair<int, int>> Bus::calculatePath(std::pair<int, int> startPoin
         frontier.pop();
 
         // Check if current is within +-1 of endPoint
-        if (std::abs(current.first - endPoint.first) <= 0 && std::abs(current.second - endPoint.second) <= 0) {
+        if (std::abs(current.first - endPoint.first) <= 1 && std::abs(current.second - endPoint.second) <= 1) {
             finalPoint = current;
             reached = true;
             break;
@@ -296,6 +297,8 @@ std::queue<std::pair<int, int>> Bus::calculatePath(std::pair<int, int> startPoin
                 _y--;
                 break;
         }
+    } else {
+        std::cout << "Bus" << _id << ": Path found!" << std::endl;
     }
 
     return path;

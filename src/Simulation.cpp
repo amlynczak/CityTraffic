@@ -126,11 +126,6 @@ void Simulation::initializeIntersections() {
 
 void Simulation::run() {
 	_running = true;
-	const float dt = 1.0;// 1.0f / 60.0f;
-	while (_running) {
-		update(dt);
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-	}
 }
 
 void Simulation::update(float dt) {
@@ -181,7 +176,7 @@ void Simulation::reset() {
 	for (int i = 0; i < _numBuses; ++i) {
 		auto bus = std::make_shared<Bus>(_numCars + _numPedestrians + i + 1);
 		bus->placeOnMap(_map);
-		bus->setRandomRoute(9, _map);
+		bus->setRandomRoute(5, _map);
 		_entityManager.addEntity(bus);
 	}
 	_running = true;

@@ -58,6 +58,32 @@ void Bus::update(float delta, Map& map) {
 
 	if (_path.empty()) {
 		std::cout << "Bus" << _id << ": No path to follow!" << std::endl;
+        map.getTileObject(static_cast<int>(_x), static_cast<int>(_y)).setOccupied(false);
+        switch(_dir) {
+            case Direction::UP:
+                _dir = Direction::DOWN;
+                _x--;
+                break;
+            case Direction::DOWN:
+                _dir = Direction::UP;
+                _x++;
+                break;
+            case Direction::LEFT:
+                _dir = Direction::RIGHT;
+                _y++;
+                break;
+            case Direction::RIGHT:
+                _dir = Direction::LEFT;
+                _y--;
+                break;
+            default:
+                break;
+        }
+        this->_path = calculatePath(
+            { static_cast<int>(_x), static_cast<int>(_y) },
+            { static_cast<int>(_route[_currentStop].first), static_cast<int>(_route[_currentStop].second) },
+            map
+        );
 		return;
 	}
 
@@ -95,9 +121,9 @@ void Bus::update(float delta, Map& map) {
 		_y = static_cast<float>(nextY);
 		nextTileObject.setOccupied(true); // zajmij nowy kafelek
 
-		// Je�li dojechali�my dok�adnie do targetX, targetY
+		// Je�li dojechali�my dok�adnie do targetX, targetY
 		if (nextX == targetX && nextY == targetY) {
-			_path.pop(); // punkt osi�gni�ty
+			_path.pop(); // punkt osi�gni�ty
 			if (_path.empty()) {
 				_atStop = true;
 				_stopTime = 0;
@@ -106,78 +132,170 @@ void Bus::update(float delta, Map& map) {
 	}
 	else {
 		std::cout << "Bus" << _id << ": Blocked at (" << nextX << ", " << nextY << ")" << std::endl;
-		// Opcjonalnie: spr�buj przeliczy� �cie�k� na nowo lub zosta� w miejscu
+		// Opcjonalnie: spr�buj przeliczy� �cie�k� na nowo lub zosta� w miejscu
 	}
 }
 
 
 std::queue<std::pair<int, int>> Bus::calculatePath(std::pair<int, int> startPoint, std::pair<int, int> endPoint, const Map& map) {
-	std::queue<std::pair<int, int>> path;
-	std::map<std::pair<int, int>, std::pair<int, int>> cameFrom;
-	std::set<std::pair<int, int>> visited;
-	std::queue<std::pair<int, int>> frontier;
+    std::queue<std::pair<int, int>> path;
+    std::map<std::pair<int, int>, std::pair<int, int>> cameFrom;
+    std::set<std::pair<int, int>> visited;
+    std::queue<std::pair<int, int>> frontier;
 
-	int width = map.getWidth();
-	int height = map.getHeight();
+    int width = map.getWidth();
+    int height = map.getHeight();
 
-	auto isValid = [&](int x, int y) {
-		return x >= 0 && x < width && y >= 0 && y < height &&
-			(map.getTile(x, y) == 1 || map.getTile(x, y) == 3 || map.getTile(x, y) == 4 || map.getTile(x, y) == 5);
-		};
+    auto isValid = [&](int x, int y, int prevX, int prevY) {
+        // Sprawdź, czy pole jest w granicach mapy
+        if (x < 0 || x >= width || y < 0 || y >= height) return false;
 
-	// Start BFS
-	frontier.push(startPoint);
-	visited.insert(startPoint);
+        int tile = map.getTile(x, y);
 
-	const std::vector<std::pair<int, int>> directions = {
-		{1, 0}, {-1, 0}, {0, 1}, {0, -1}
-	};
+        // Jeśli pole to -1, zawróć
+        if (tile == -1) {
+            int dx = x - prevX;
+            int dy = y - prevY;
 
-	bool reached = false;
-	std::pair<int, int> finalPoint;
+            // Zawróć w zależności od kierunku
+            if (dx == 1 && dy == 0) { // Jechał w prawo
+                x = prevX;
+                y = prevY - 1;
+            } else if (dx == -1 && dy == 0) { // Jechał w lewo
+                x = prevX;
+                y = prevY + 1;
+            } else if (dx == 0 && dy == 1) { // Jechał w dół
+                x = prevX + 1;
+                y = prevY;
+            } else if (dx == 0 && dy == -1) { // Jechał w górę
+                x = prevX - 1;
+                y = prevY;
+            }
 
-	while (!frontier.empty() && !reached) {
-		auto current = frontier.front();
-		frontier.pop();
+            // Sprawdź, czy nowe pole jest w granicach mapy
+            if (x < 0 || x >= width || y < 0 || y >= height) return false;
 
-		// Check if current is within +-1 of endPoint
-		if (std::abs(current.first - endPoint.first) <= 1 && std::abs(current.second - endPoint.second) <= 1) {
-			finalPoint = current;
-			reached = true;
-			break;
-		}
+            // Sprawdź, czy nowe pole jest typu 1, 3, 4, 5
+            tile = map.getTile(x, y);
+            if (tile == 1 || tile == 3 || tile == 4 || tile == 5) {
+                path.push({x, y}); // Dodaj zawrócenie do ścieżki
+                return true;
+            }
+            return false;
+        }
 
-		// Explore neighbors
-		for (auto [dx, dy] : directions) {
-			int nx = current.first + dx;
-			int ny = current.second + dy;
-			std::pair<int, int> next = { nx, ny };
+        // Sprawdź, czy pole jest typu 1, 3, 4, 5
+        if (!(tile == 1 || tile == 3 || tile == 4 || tile == 5)) return false;
 
-			if (isValid(nx, ny) && visited.find(next) == visited.end()) {
-				frontier.push(next);
-				visited.insert(next);
-				cameFrom[next] = current;
-			}
-		}
-	}
+        // Jeśli pole jest typu 4, nie trzeba sprawdzać pola na prawo
+        if (tile == 4) return true;
 
-	if (!reached) {
-		std::cout << "Bus" << _id << ": No path found!" << std::endl;
-		return path;  // empty path
-	}
+        // Oblicz kierunek ruchu (relatywne prawo)
+        int dx = x - prevX;
+        int dy = y - prevY;
 
-	// Reconstruct path from end to start
-	std::vector<std::pair<int, int>> reversePath;
-	auto current = finalPoint;
-	while (current != startPoint) {
-		reversePath.push_back(current);
-		current = cameFrom[current];
-	}
-	std::reverse(reversePath.begin(), reversePath.end());
+        // Sprawdź, czy na prawo od obecnego pola znajduje się kafelek typu 2
+        int rightX = x, rightY = y;
+        if (dx == 1 && dy == 0) { // Ruch w prawo
+            rightX = x;
+            rightY = y + 1;
+        } else if (dx == -1 && dy == 0) { // Ruch w lewo
+            rightX = x;
+            rightY = y - 1;
+        } else if (dx == 0 && dy == 1) { // Ruch w dół
+            rightX = x - 1;
+            rightY = y;
+        } else if (dx == 0 && dy == -1) { // Ruch w górę
+            rightX = x + 1;
+            rightY = y;
+        }
 
-	for (auto& p : reversePath) {
-		path.push(p);
-	}
+        // Sprawdź, czy pole na prawo jest typu 2
+        if (rightX >= 0 && rightX < width && rightY >= 0 && rightY < height) {
+            if (map.getTile(rightX, rightY) == 2) {
+                return true;
+            }
+        }
 
-	return path;
+        return false;
+    };
+
+    // Start BFS
+    frontier.push(startPoint);
+    visited.insert(startPoint);
+
+    const std::vector<std::pair<int, int>> directions = {
+        {1, 0}, {-1, 0}, {0, 1}, {0, -1}
+    };
+
+    bool reached = false;
+    std::pair<int, int> finalPoint;
+
+    while (!frontier.empty() && !reached) {
+        auto current = frontier.front();
+        frontier.pop();
+
+        // Check if current is within +-1 of endPoint
+        if (std::abs(current.first - endPoint.first) <= 1 && std::abs(current.second - endPoint.second) <= 1) {
+            finalPoint = current;
+            reached = true;
+            break;
+        }
+
+        // Explore neighbors
+        for (auto [dx, dy] : directions) {
+            int nx = current.first + dx;
+            int ny = current.second + dy;
+            std::pair<int, int> next = {nx, ny};
+
+            if (visited.find(next) == visited.end() && isValid(nx, ny, current.first, current.second)) {
+                frontier.push(next);
+                visited.insert(next);
+                cameFrom[next] = current;
+            }
+        }
+    }
+
+    if (!reached) {
+        std::cout << "Bus" << _id << ": No path found!" << std::endl;
+        return path;  // empty path
+    }
+
+    // Reconstruct path from end to start
+    std::vector<std::pair<int, int>> reversePath;
+    auto current = finalPoint;
+    while (current != startPoint) {
+        reversePath.push_back(current);
+        current = cameFrom[current];
+    }
+    std::reverse(reversePath.begin(), reversePath.end());
+
+    for (auto& p : reversePath) {
+        path.push(p);
+    }
+
+    if (path.empty()) {
+        switch(_dir) {
+            case Direction::UP:
+                _dir = Direction::DOWN;
+                _x--;
+                break;
+            case Direction::DOWN:
+                _dir = Direction::UP;
+                _x++;
+                break;
+            case Direction::LEFT:
+                _dir = Direction::RIGHT;
+                _y++;
+                break;
+            case Direction::RIGHT:
+                _dir = Direction::LEFT;
+                _y--;
+                break;
+        }
+    } else {
+        std::cout << "Bus" << _id << ": Path found!" << std::endl;
+    }
+
+    return path;
 }

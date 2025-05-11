@@ -22,16 +22,16 @@ Simulation::Simulation() : _running(false), _numCars(5), _numPedestrians(2), _nu
 		_entityManager.addEntity(car);
 	}
 
-	for (int i = 0; i < 2; ++i) {
+	for (int i = 0; i < _numPedestrians; ++i) {
 		auto pedestrian = std::make_shared<Pedestrian>(_numCars + i + 1);
 		pedestrian->placeOnMap(_map);
 		_entityManager.addEntity(pedestrian);
 	}
 
-	for (int i = 0; i < 1; ++i) {
+	for (int i = 0; i < _numBuses; ++i) {
 		auto bus = std::make_shared<Bus>(_numCars + _numPedestrians + i + 1);
 		bus->placeOnMap(_map);
-		bus->setRandomRoute(9, _map);
+		bus->setRandomRoute(5, _map);
 		_entityManager.addEntity(bus);
 	}
 }
@@ -216,22 +216,26 @@ void Simulation::setNumCars(int num) {
 		return;
 	}
 	else if (num > _numCars) {
-		for (int i = _numCars; i < num; ++i) {
-			auto car = std::make_shared<Car>(i + 1);
-			car->placeOnMap(_map);
-			_entityManager.addEntity(car);
-		}
-		_numCars = num;
+		int id = _entityManager.getEntityCount() + 1;
+		auto car = std::make_shared<Car>(id);
+		car->placeOnMap(_map);
+		_entityManager.addEntity(car);
 	}
 	else if (num < _numCars) {
-		for (int i = num; i < _numCars; ++i) {
-			int x = _entityManager.getEntityById(i + 1)->getX();
-			int y = _entityManager.getEntityById(i + 1)->getY();
-			_map.getTileObject(x, y).setOccupied(false);
-			_entityManager.removeEntity(i + 1);
+		int entitiesCount = _entityManager.getEntityCount();
+		auto entities = _entityManager.getEntities();
+		for(auto it = entities.begin(); it != entities.end(); ++it) {
+			if (std::dynamic_pointer_cast<Car>(*it)) {
+				int id = (*it)->getId();
+				int x = (*it)->getX();
+				int y = (*it)->getY();
+				_map.getTileObject(x, y).setOccupied(false);
+				_entityManager.removeEntity(id);
+				break;
+			}
 		}
-		_numCars = num;
 	}
+	_numCars = num;
 }
 
 void Simulation::setNumPedestrians(int num) {
@@ -239,15 +243,20 @@ void Simulation::setNumPedestrians(int num) {
 		return;
 	}
 	else if (num > _numPedestrians) {
-		for (int i = _numPedestrians; i < num; ++i) {
-			auto pedestrian = std::make_shared<Pedestrian>(_numCars + i + 1);
-			pedestrian->placeOnMap(_map);
-			_entityManager.addEntity(pedestrian);
-		}
+		int id = _entityManager.getEntityCount() + 1;
+		auto pedestrian = std::make_shared<Pedestrian>(id);
+		pedestrian->placeOnMap(_map);
+		_entityManager.addEntity(pedestrian);
 	}
 	else if (num < _numPedestrians) {
-		for (int i = num; i < _numPedestrians; ++i) {
-			_entityManager.removeEntity(_numCars + i + 1);
+		int entitiesCount = _entityManager.getEntityCount();
+		auto entities = _entityManager.getEntities();
+		for(auto it = entities.begin(); it != entities.end(); ++it) {
+			if (std::dynamic_pointer_cast<Pedestrian>(*it)) {
+				int id = (*it)->getId();
+				_entityManager.removeEntity(id);
+				break;
+			}
 		}
 	}
 	_numPedestrians = num;
@@ -258,19 +267,24 @@ void Simulation::setNumBuses(int num) {
 		return;
 	}
 	else if (num > _numBuses) {
-		for (int i = _numBuses; i < num; ++i) {
-			auto bus = std::make_shared<Bus>(_numCars + _numPedestrians + i + 1);
-			bus->placeOnMap(_map);
-			bus->setRandomRoute(9, _map);
-			_entityManager.addEntity(bus);
-		}
+		int id = _entityManager.getEntityCount() + 1;
+		auto bus = std::make_shared<Bus>(id);
+		bus->placeOnMap(_map);
+		bus->setRandomRoute(5, _map);
+		_entityManager.addEntity(bus);
 	}
 	else if (num < _numBuses) {
-		for (int i = num; i < _numBuses; ++i) {
-			int x = _entityManager.getEntityById(_numCars + _numPedestrians + i + 1)->getX();
-			int y = _entityManager.getEntityById(_numCars + _numPedestrians + i + 1)->getY();
-			_map.getTileObject(x, y).setOccupied(false);
-			_entityManager.removeEntity(_numCars + _numPedestrians + i + 1);
+		int entitiesCount = _entityManager.getEntityCount();
+		auto entities = _entityManager.getEntities();
+		for(auto it = entities.begin(); it != entities.end(); ++it) {
+			if (std::dynamic_pointer_cast<Bus>(*it)) {
+				int id = (*it)->getId();
+				int x = (*it)->getX();
+				int y = (*it)->getY();
+				_map.getTileObject(x, y).setOccupied(false);
+				_entityManager.removeEntity(id);
+				break;
+			}
 		}
 	}
 	_numBuses = num;

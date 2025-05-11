@@ -17,6 +17,7 @@ public:
 
 	std::vector<std::shared_ptr<Entity>>& getEntities();
 	std::shared_ptr<Entity> getEntityById(int id);
+	int getEntityCount() const;
 	//std::shared_ptr<Entity> getEntityAt(float x, float y);
 	//std::vector<std::shared_ptr<Entity>> getEntitiesInRange(float x, float y, float range);
 };

@@ -24,6 +24,10 @@ void EntityManager::updateAll(float deltaTime, Map& map) {
 	}
 }
 
+int EntityManager::getEntityCount() const {
+	return _entities.size();
+}
+
 std::vector<std::shared_ptr<Entity>>& EntityManager::getEntities(){
 	return _entities;
 }

@@ -8,7 +8,7 @@
 
 Simulation::Simulation() : _running(false), _numCars(5), _numPedestrians(2), _numBuses(1), _cycleTime(15.0f), _simulationSpeed(1)
 {
-	if (!_map.loadFromFile("../../../../resources/city_100x40.csv")) {
+	if (!_map.loadFromFile("../../../../resources/map.csv")) {
 		std::cerr << "Error: cannot load map from file" << std::endl;
 		return;
 	}
@@ -51,7 +51,7 @@ Simulation::Simulation(int cars, int pedestrians, int buses, float cycleTime, in
 		return;
 	}
 
-	if (!_map.loadFromFile("../../../../resources/city_100x40.csv")) {
+	if (!_map.loadFromFile("../../../../resources/city.csv")) {
 		std::cerr << "Error: cannot load map from file" << std::endl;
 		return;
 	}

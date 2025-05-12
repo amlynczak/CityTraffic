@@ -1,19 +1,15 @@
 cmake_minimum_required(VERSION 3.21)
 project(CityTraffic)
 
-# Ustawienia katalogów wyjściowych
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-# Standard C++
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Pobieranie SFML z GitHuba
 include(FetchContent)
 
-# Opcjonalnie: wymuś statyczne biblioteki
 set(SFML_STATIC_LIBRARIES TRUE)
 
 FetchContent_Declare(
@@ -24,10 +20,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(SFML)
 
-# Kompilacja głównego pliku – na początek tylko main.cpp
 add_executable(main main.cpp)
 
-# Linkowanie SFML (uwzględnij sfml-system!)
 target_link_libraries(main PRIVATE
         sfml-graphics
         sfml-window
@@ -36,7 +30,6 @@ target_link_libraries(main PRIVATE
         sfml-system
 )
 
-# Kopiowanie DLL do folderu bin (tylko Windows)
 if(WIN32)
     add_custom_command(TARGET main POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -52,36 +45,34 @@ endif()
 
 add_executable(CityTraffic
     main.cpp
-    include/Map.h
-    include/Vehicle.h
-    include/TrafficLights.h
-    include/Pedestrian.h
-    include/Simulation.h
     gui/GUI.h
+    gui/GUI.cpp
+    include/Simulation.h
+    include/Map.h
+    include/Tile.h
+    include/Intersection.h
+    include/TrafficLights.h
+    include/EntityManager.h
     include/Entity.h
+    include/Vehicle.h
     include/Car.h
     include/Bus.h
-    include/EntityManager.h
-    include/Intersection.h
-    include/Tile.h
-    gui/GUI.cpp
-    src/Entity.cpp
+    include/Pedestrian.h
     src/Simulation.cpp
+    src/Map.cpp
+    src/Tile.cpp
+    src/Intersection.cpp
+    src/TrafficLights.cpp
+    src/EntityManager.cpp
+    src/Entity.cpp
     src/Vehicle.cpp
     src/Bus.cpp
     src/Car.cpp
-    src/EntityManager.cpp
-    src/Intersection.cpp
-    src/Map.cpp
     src/Pedestrian.cpp
-    src/TrafficLights.cpp
-    src/Tile.cpp
 )
 
-# Dodaj katalogi nagłówków
 target_include_directories(CityTraffic PRIVATE include simulation)
 
-# Linkuj SFML do CityTraffic
 target_link_libraries(CityTraffic PRIVATE
     sfml-graphics
     sfml-window

@@ -24,7 +24,6 @@ GUI::GUI(Simulation& sim) : _window(sf::VideoMode(1600, 800), "CityTraffic"), _s
     _title.setFillColor(sf::Color::Black);
     _title.setPosition(1250.f, 50.f);
 
-    // Initialize Start/Stop and Reset buttons
     _buttonLabels.resize(2);
     _buttonLabels[0].setString("Start/Stop");
     _buttonLabels[1].setString("Reset");
@@ -40,7 +39,6 @@ GUI::GUI(Simulation& sim) : _window(sf::VideoMode(1600, 800), "CityTraffic"), _s
         _buttonLabels[i].setPosition(1250.f, 125.f + 100.f * i);
     }
 
-    // Initialize adjustable parameter buttons
     _adjustableParameters = {
         {"Number of cars", _simulation.getNumCars()},
         {"Number of pedestrians", _simulation.getNumPedestrians()},
@@ -48,7 +46,7 @@ GUI::GUI(Simulation& sim) : _window(sf::VideoMode(1600, 800), "CityTraffic"), _s
         {"Simulation speed", _simulation.getSimulationSpeed()}
     };
 
-    float yOffset = 300.f; // Start below the Reset button
+    float yOffset = 300.f;
     for (auto& param : _adjustableParameters)
     {
         sf::Text label;
@@ -69,7 +67,7 @@ GUI::GUI(Simulation& sim) : _window(sf::VideoMode(1600, 800), "CityTraffic"), _s
         valueText.setFont(_font);
         valueText.setCharacterSize(24);
         valueText.setFillColor(sf::Color::Black);
-        valueText.setPosition(1310.f, yOffset + 50.f);
+        valueText.setPosition(1330.f, yOffset + 50.f);
         _valueTexts.push_back(valueText);
 
         sf::RectangleShape plusButton(sf::Vector2f(50.f, 50.f));
@@ -100,8 +98,7 @@ void GUI::processEvents()
     sf::Event event;
     while (_window.pollEvent(event))
     {
-        if (event.type == sf::Event::Closed)
-            _window.close();
+        if (event.type == sf::Event::Closed) _window.close();
 
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
         {
@@ -146,7 +143,7 @@ void GUI::handleButtonClick(size_t buttonIndex)
         break;
 
     case 1: // Reset
-        _simulation.reset(); // Przykładowe wartości: 5 samochodów, 2 pieszych, 1 autobus, cykl 15s, prędkość 1x
+        _simulation.reset();
         break;
 
     default:
@@ -159,12 +156,11 @@ void GUI::adjustParameter(size_t index, int delta)
     if (index < _adjustableParameters.size())
     {
         auto& param = _adjustableParameters[index];
-        if(param.second + delta >= 0) // Ensure non-negative values
+        if(param.second + delta >= 0) 
         {
             param.second += delta;
         }
 
-        // Update the simulation parameter based on the index
         switch (index)
         {
         case 0: // Number of cars
@@ -182,15 +178,14 @@ void GUI::adjustParameter(size_t index, int delta)
         default:
             break;
         }
-        // Update the corresponding value text
         _valueTexts[index].setString(std::to_string(param.second > 0 ? param.second : 0));
     }
 }
 
 void GUI::update() {
     static sf::Clock clock;
-    float dt = 0.1;//clock.restart().asSeconds();
-    _simulation.update(dt);  // tylko je�li chcesz symulacj� odpala� st�d
+    float dt = 0.1;
+    _simulation.update(dt);
 }
 
 
@@ -198,7 +193,7 @@ void GUI::render()
 {
    _window.clear();
 
-   // 1. Rysuj map� (siatk�)
+   // 1. Mapa
    const Map& map = _simulation.getMap();
    for (int y = 0; y < map.getHeight(); ++y)
    {
@@ -211,7 +206,7 @@ void GUI::render()
            case 0: tile.setFillColor(sf::Color(50, 200, 50)); break; // trawa
            case 1: tile.setFillColor(sf::Color(100, 100, 100)); break; // jezdnia
            case 2: tile.setFillColor(sf::Color(200, 200, 200)); break; // chodnik
-           case 3: tile.setFillColor(sf::Color(100, 100, 130)); break; // przej�cie dla pieszych
+           case 3: tile.setFillColor(sf::Color(100, 100, 130)); break; // przejscie dla pieszych
            case 4: tile.setFillColor(sf::Color(100, 100, 100)); break; // skrzy�owanie
            default: tile.setFillColor(sf::Color::Black); break;
            }
@@ -220,7 +215,7 @@ void GUI::render()
        }
    }
 
-   // 2. Rysuj encje (samochody itd.)
+   // 2. Entities
    const auto& entities = _simulation.getEntityManager().getEntities();
    for (const auto& entity : entities)
    {
@@ -262,6 +257,7 @@ void GUI::render()
        _window.draw(e);
    }
 
+   // 3. Skrzyzowania
    for (const auto& intersection : _simulation.getIntersections()) {
     for (const auto& light : intersection.getLights()) {
         sf::CircleShape lightCircle(5.f);
@@ -302,7 +298,7 @@ void GUI::render()
         minusSymbol.setCharacterSize(24);
         minusSymbol.setFillColor(sf::Color::White);
         minusSymbol.setPosition(
-            _minusButtons[i].getPosition().x + 15.f, // Wyśrodkowanie w przycisku
+            _minusButtons[i].getPosition().x + 15.f,
             _minusButtons[i].getPosition().y + 10.f
         );
 
@@ -312,7 +308,7 @@ void GUI::render()
         plusSymbol.setCharacterSize(24);
         plusSymbol.setFillColor(sf::Color::White);
         plusSymbol.setPosition(
-            _plusButtons[i].getPosition().x + 15.f, // Wyśrodkowanie w przycisku
+            _plusButtons[i].getPosition().x + 15.f,
             _plusButtons[i].getPosition().y + 10.f
         );
 

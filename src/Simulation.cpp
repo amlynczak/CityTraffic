@@ -51,7 +51,7 @@ Simulation::Simulation(int cars, int pedestrians, int buses, float cycleTime, in
 		return;
 	}
 
-	if (!_map.loadFromFile("../../../../resources/map.csv")) {
+	if (!_map.loadFromFile("../../../../resources/city_100x40.csv")) {
 		std::cerr << "Error: cannot load map from file" << std::endl;
 		return;
 	}
@@ -81,44 +81,40 @@ Simulation::Simulation(int cars, int pedestrians, int buses, float cycleTime, in
 void Simulation::initializeIntersections() {
     for (int y = 0; y < _map.getHeight(); ++y) {
         for (int x = 0; x < _map.getWidth(); ++x) {
-            // Sprawdź, czy aktualny kafelek to lewy górny róg skrzyżowania
             if (_map.getTile(x, y) == 4 &&
                 _map.getTile(x + 1, y) == 4 &&
                 _map.getTile(x, y + 1) == 4 &&
                 _map.getTile(x + 1, y + 1) == 4) {
                 
-                Intersection intersection(15.0f); // Tworzenie skrzyżowania z domyślnym czasem cyklu
-
-                // Wykrywanie świateł wokół skrzyżowania
+                Intersection intersection(15.0f);
                 std::vector<std::pair<int, int>> lightPositions = {
-                    {x, y - 2},     // Góra
-                    {x + 1, y - 2}, // Góra (prawa strona)
-                    {x, y + 3},     // Dół
-                    {x + 1, y + 3}, // Dół (prawa strona)
-                    {x - 2, y},     // Lewo
-                    {x - 2, y + 1}, // Lewo (dolna strona)
-                    {x + 3, y},     // Prawo
-                    {x + 3, y + 1}  // Prawo (dolna strona)
+                    {x, y - 2},    
+                    {x + 1, y - 2},
+                    {x, y + 3},    
+                    {x + 1, y + 3},
+                    {x - 2, y},    
+                    {x - 2, y + 1},
+                    {x + 3, y},    
+                    {x + 3, y + 1} 
                 };
 
                 for (const auto& pos : lightPositions) {
                     int nx = pos.first;
                     int ny = pos.second;
 
-                    if (_map.getTile(nx, ny) == 5) { // Jeśli znaleziono światło
-                        TrafficLights light(nx, ny); // Ustaw pozycję świateł
+                    if (_map.getTile(nx, ny) == 5) {
+                        TrafficLights light(nx, ny);
                         light.setup(_map);
 
-                        // Przypisz światło do odpowiedniej grupy
-                        if (nx == x || nx == x + 1) { // Góra lub dół
+                        if (nx == x || nx == x + 1) {
                             intersection.addUpDownLight(light);
-                        } else if (ny == y || ny == y + 1) { // Lewo lub prawo
+                        } else if (ny == y || ny == y + 1) {
                             intersection.addLeftRightLight(light);
                         }
                     }
                 }
 
-                _intersections.push_back(intersection); // Dodaj skrzyżowanie do listy
+                _intersections.push_back(intersection);
             }
         }
     }

@@ -78,9 +78,7 @@ void Pedestrian::update(float delta, Map& map) {
 	int currentTile = map.getTile((int)_x, (int)_y);
 	int nextTile = map.getTile(nextX, nextY);
 
-	std::cout << "Pedestrian" << _id << std::endl;
-	std::cout << "Current tile: " << currentTile << std::endl;
-	std::cout << "Next tile: " << nextTile << std::endl;
+	std::cout << "Pedestrian" << _id << " (" << _x << ", " << _y << ")" << std::endl;
 
 	if (nextTile == -1) {
 		switch (_dir)

@@ -7,7 +7,7 @@ Vehicle::Vehicle(int id, float x, float y, Direction dir) : Entity(id, x, y, dir
 
 void Vehicle::placeOnMap(const Map& map)
 {
-	srand(time(0)); // Inicjalizacja generatora liczb losowych
+	srand(time(0));
 	int dir = rand() % 4;
 	switch (dir)
 	{

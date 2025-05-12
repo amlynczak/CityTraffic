@@ -123,11 +123,10 @@ void Bus::update(float delta, Map& map) {
 		currentTileObject.setOccupied(false); // zwolnij aktualny kafelek
 		_x = static_cast<float>(nextX);
 		_y = static_cast<float>(nextY);
-		nextTileObject.setOccupied(true); // zajmij nowy kafelek
+		nextTileObject.setOccupied(true);
 
-		// Je�li dojechali�my dok�adnie do targetX, targetY
 		if (nextX == targetX && nextY == targetY) {
-			_path.pop(); // punkt osi�gni�ty
+			_path.pop();
 			if (_path.empty()) {
 				_atStop = true;
 				_stopTime = 0;
@@ -136,10 +135,8 @@ void Bus::update(float delta, Map& map) {
 	}
 	else {
 		std::cout << "Bus" << _id << ": Blocked at (" << nextX << ", " << nextY << ")" << std::endl;
-		// Opcjonalnie: spr�buj przeliczy� �cie�k� na nowo lub zosta� w miejscu
 	}
 }
-
 
 std::queue<std::pair<int, int>> Bus::calculatePath(std::pair<int, int> startPoint, std::pair<int, int> endPoint, const Map& map) {
     std::queue<std::pair<int, int>> path;
@@ -151,80 +148,65 @@ std::queue<std::pair<int, int>> Bus::calculatePath(std::pair<int, int> startPoin
     int height = map.getHeight();
 
     auto isValid = [&](int x, int y, int prevX, int prevY) {
-        // Sprawdź, czy pole jest w granicach mapy
         if (x < 0 || x >= width || y < 0 || y >= height) return false;
 
         int tile = map.getTile(x, y);
-
-        // Jeśli pole to -1, zawróć
         if (tile == -1) {
             int dx = x - prevX;
             int dy = y - prevY;
 
-            // Zawróć w zależności od kierunku
-            if (dx == 1 && dy == 0) { // Jechał w prawo
+            if (dx == 1 && dy == 0) {
                 x = prevX;
                 y = prevY - 1;
-            } else if (dx == -1 && dy == 0) { // Jechał w lewo
+            } else if (dx == -1 && dy == 0) {
                 x = prevX;
                 y = prevY + 1;
-            } else if (dx == 0 && dy == 1) { // Jechał w dół
+            } else if (dx == 0 && dy == 1) {
                 x = prevX + 1;
                 y = prevY;
-            } else if (dx == 0 && dy == -1) { // Jechał w górę
+            } else if (dx == 0 && dy == -1) {
                 x = prevX - 1;
                 y = prevY;
             }
 
-            // Sprawdź, czy nowe pole jest w granicach mapy
             if (x < 0 || x >= width || y < 0 || y >= height) return false;
-
-            // Sprawdź, czy nowe pole jest typu 1, 3, 4, 5
             tile = map.getTile(x, y);
             if (tile == 1 || tile == 3 || tile == 4 || tile == 5) {
-                path.push({x, y}); // Dodaj zawrócenie do ścieżki
+                path.push({x, y});
                 return true;
             }
             return false;
         }
 
-        // Sprawdź, czy pole jest typu 1, 3, 4, 5
         if (!(tile == 1 || tile == 3 || tile == 4 || tile == 5)) return false;
 
-        // Jeśli pole jest typu 4, nie trzeba sprawdzać pola na prawo
         if (tile == 4) return true;
 
-        // Oblicz kierunek ruchu (relatywne prawo)
         int dx = x - prevX;
         int dy = y - prevY;
-
-        // Sprawdź, czy na prawo od obecnego pola znajduje się kafelek typu 2
         int rightX = x, rightY = y;
-        if (dx == 1 && dy == 0) { // Ruch w prawo
+        if (dx == 1 && dy == 0) {
             rightX = x;
             rightY = y + 1;
-        } else if (dx == -1 && dy == 0) { // Ruch w lewo
+        } else if (dx == -1 && dy == 0) {
             rightX = x;
             rightY = y - 1;
-        } else if (dx == 0 && dy == 1) { // Ruch w dół
+        } else if (dx == 0 && dy == 1) {
             rightX = x - 1;
             rightY = y;
-        } else if (dx == 0 && dy == -1) { // Ruch w górę
+        } else if (dx == 0 && dy == -1) {
             rightX = x + 1;
             rightY = y;
         }
 
-        // Sprawdź, czy pole na prawo jest typu 2
         if (rightX >= 0 && rightX < width && rightY >= 0 && rightY < height) {
             if (map.getTile(rightX, rightY) == 2) {
                 return true;
             }
         }
-
         return false;
     };
 
-    // Start BFS
     frontier.push(startPoint);
     visited.insert(startPoint);
 
@@ -239,14 +221,12 @@ std::queue<std::pair<int, int>> Bus::calculatePath(std::pair<int, int> startPoin
         auto current = frontier.front();
         frontier.pop();
 
-        // Check if current is within +-1 of endPoint
         if (std::abs(current.first - endPoint.first) <= 1 && std::abs(current.second - endPoint.second) <= 1) {
             finalPoint = current;
             reached = true;
             break;
         }
 
-        // Explore neighbors
         for (auto [dx, dy] : directions) {
             int nx = current.first + dx;
             int ny = current.second + dy;
@@ -262,10 +242,9 @@ std::queue<std::pair<int, int>> Bus::calculatePath(std::pair<int, int> startPoin
 
     if (!reached) {
         std::cout << "Bus" << _id << ": No path found!" << std::endl;
-        return path;  // empty path
+        return path;
     }
 
-    // Reconstruct path from end to start
     std::vector<std::pair<int, int>> reversePath;
     auto current = finalPoint;
     while (current != startPoint) {
@@ -300,6 +279,5 @@ std::queue<std::pair<int, int>> Bus::calculatePath(std::pair<int, int> startPoin
     } else {
         std::cout << "Bus" << _id << ": Path found!" << std::endl;
     }
-
     return path;
 }

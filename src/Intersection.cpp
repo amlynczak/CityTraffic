@@ -15,30 +15,25 @@ void Intersection::update(float deltaTime, Map& map) {
 
     if (timer >= cycleTime) {
         timer = 0.0f;
-        upDownGreen = !upDownGreen; // Switch active lights
+        upDownGreen = !upDownGreen;
     }
 
     if (upDownGreen) {
         for (auto& light : UpDownLights) {
-            light.setState(LightState::GREEN, map); // Force UpDown lights to green
-            //light.update(deltaTime, map);     // Update logic for green lights
+            light.setState(LightState::GREEN, map);
         }
         for (auto& light : LeftRightLights) {
-            light.setState(LightState::RED, map);  // Force LeftRight lights to red
-            //light.update(0, map);             // No update needed for red lights
+            light.setState(LightState::RED, map);
         }
     } else {
         for (auto& light : LeftRightLights) {
-            light.setState(LightState::GREEN, map); // Force LeftRight lights to green
-            //light.update(deltaTime, map);     // Update logic for green lights
+            light.setState(LightState::GREEN, map);
         }
         for (auto& light : UpDownLights) {
-            light.setState(LightState::RED, map);  // Force UpDown lights to red
-            //light.update(0, map);             // No update needed for red lights
+            light.setState(LightState::RED, map);
         }
     }
 }
-
 
 std::vector<TrafficLights>& Intersection::getUpDownLights(){
     return UpDownLights;

@@ -7,7 +7,7 @@ TrafficLights::TrafficLights(int x, int y) : state(LightState::RED), timer(0.0f)
 
 void TrafficLights::setup(Map& map) {
 	state = LightState::RED;
-	map.getTileObject(x, y).setOccupied(true); // Block cars from passing
+	map.getTileObject(x, y).setOccupied(true);
 	timer = 0.0f;
 }
 
@@ -18,10 +18,10 @@ LightState TrafficLights::getState() const {
 void TrafficLights::setState(LightState state, Map& map) {
 	this->state = state;
 	if (state == LightState::RED || state == LightState::YELLOW) {
-		map.getTileObject(x, y).setOccupied(true); // Block cars from passing
+		map.getTileObject(x, y).setOccupied(true);
 		for (int dx = -1; dx <= 1; ++dx) {
 			for (int dy = -1; dy <= 1; ++dy) {
-				if (dx == 0 && dy == 0) continue; // Skip the current position
+				if (dx == 0 && dy == 0) continue;
 				if (map.getTile(x + dx, y + dy) == 3) {
 					map.getTileObject(x + dx, y + dy).setCanPedestrianEnter(true);
 				}
@@ -29,17 +29,17 @@ void TrafficLights::setState(LightState state, Map& map) {
 		}
 	}
 	else if (state == LightState::GREEN) {
-		map.getTileObject(x, y).setOccupied(false); // Allow cars to pass
+		map.getTileObject(x, y).setOccupied(false);
 		for (int dx = -1; dx <= 1; ++dx) {
 			for (int dy = -1; dy <= 1; ++dy) {
-				if (dx == 0 && dy == 0) continue; // Skip the current position
+				if (dx == 0 && dy == 0) continue;
 				if (map.getTile(x + dx, y + dy) == 3) {
 					map.getTileObject(x + dx, y + dy).setCanPedestrianEnter(false);
 				}
 			}
 		}
 	}
-	timer = 0.0f; // Reset timer when state is set manually
+	timer = 0.0f;
 }
 
 int TrafficLights::getX() const {

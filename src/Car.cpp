@@ -34,14 +34,11 @@ void Car::update(float delta, Map& map) {
 		break;
 	}
 
-	
 	int currentTile = map.getTile((int)_x, (int)_y);
 	Tile& currentTileObj = map.getTileObject((int)_x, (int)_y);
 	int nextTile = map.getTile(nextX, nextY);
 
-	std::cout << "CAR" << _id << std::endl;
-	std::cout << "Current tile: " << currentTile << std::endl;
-	std::cout << "Next tile: " << nextTile << std::endl;
+	std::cout << "CAR" << _id << " (" << _x << ", " << _y << ")" << std::endl;
 
 	if (nextTile == -1) {
 		currentTileObj.setOccupied(false);
@@ -74,7 +71,7 @@ void Car::update(float delta, Map& map) {
 
 	Tile& nextTileObj = map.getTileObject((int)nextX, (int)nextY);
 	if (nextTileObj.isOccupied()) {
-		std::cout << "Car " << _id << " is already on the tile!" << std::endl;
+		//std::cout << "Car " << _id << " is already on the tile!" << std::endl;
 		return;
 	}
 

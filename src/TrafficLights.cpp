@@ -1,51 +1,51 @@
 #include "TrafficLights.h"
 #include<iostream>
 
-TrafficLights::TrafficLights() : state(LightState::RED), timer(0.0f), x(0), y(0) {}
+TrafficLights::TrafficLights() : _state(LightState::RED), _timer(0.0f), _x(0), _y(0) {}
 
-TrafficLights::TrafficLights(int x, int y) : state(LightState::RED), timer(0.0f), x(x), y(y) {}
+TrafficLights::TrafficLights(int x, int y) : _state(LightState::RED), _timer(0.0f), _x(x), _y(y) {}
 
 void TrafficLights::setup(Map& map) {
-	state = LightState::RED;
-	map.getTileObject(x, y).setOccupied(true);
-	timer = 0.0f;
+	_state = LightState::RED;
+	map.getTileObject(_x, _y).setOccupied(true);
+	_timer = 0.0f;
 }
 
 LightState TrafficLights::getState() const {
-	return state;
+	return _state;
 }
 
 void TrafficLights::setState(LightState state, Map& map) {
-	this->state = state;
+	this->_state = state;
 	if (state == LightState::RED || state == LightState::YELLOW) {
-		map.getTileObject(x, y).setOccupied(true);
+		map.getTileObject(_x, _y).setOccupied(true);
 		for (int dx = -1; dx <= 1; ++dx) {
 			for (int dy = -1; dy <= 1; ++dy) {
 				if (dx == 0 && dy == 0) continue;
-				if (map.getTile(x + dx, y + dy) == 3) {
-					map.getTileObject(x + dx, y + dy).setCanPedestrianEnter(true);
+				if (map.getTile(_x + dx, _y + dy) == 3) {
+					map.getTileObject(_x + dx, _y + dy).setCanPedestrianEnter(true);
 				}
 			}
 		}
 	}
 	else if (state == LightState::GREEN) {
-		map.getTileObject(x, y).setOccupied(false);
+		map.getTileObject(_x, _y).setOccupied(false);
 		for (int dx = -1; dx <= 1; ++dx) {
 			for (int dy = -1; dy <= 1; ++dy) {
 				if (dx == 0 && dy == 0) continue;
-				if (map.getTile(x + dx, y + dy) == 3) {
-					map.getTileObject(x + dx, y + dy).setCanPedestrianEnter(false);
+				if (map.getTile(_x + dx, _y + dy) == 3) {
+					map.getTileObject(_x + dx, _y + dy).setCanPedestrianEnter(false);
 				}
 			}
 		}
 	}
-	timer = 0.0f;
+	_timer = 0.0f;
 }
 
 int TrafficLights::getX() const {
-	return x;
+	return _x;
 }
 
 int TrafficLights::getY() const {
-	return y;
+	return _y;
 }

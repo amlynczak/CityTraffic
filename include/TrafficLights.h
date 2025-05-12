@@ -64,22 +64,22 @@ private:
      * @brief Stan świateł
      * 
      */
-    LightState state;
+    LightState _state;
     /**
      * @brief Czas trwania stanu świateł
      * 
      */
-    float timer;
+    float _timer;
     /**
      * @brief Współrzędna x
      * 
      */
-    int x;
+    int _x;
     /**
      * @brief Współrzędna y
      * 
      */
-	int y;
+	int _y;
 };
 
 #endif //TRAFFICLIGHTS_H

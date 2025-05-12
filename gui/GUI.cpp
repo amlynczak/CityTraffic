@@ -183,7 +183,6 @@ void GUI::adjustParameter(size_t index, int delta)
 }
 
 void GUI::update() {
-    static sf::Clock clock;
     float dt = 0.1;
     _simulation.update(dt);
 }

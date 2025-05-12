@@ -70,27 +70,27 @@ private:
      * @brief Wektor zawierający światła w kierunku góra-dół
      * 
      */
-    std::vector<TrafficLights> UpDownLights;
+    std::vector<TrafficLights> _upDownLights;
     /**
      * @brief Wektor zawierający światła w kierunku prawo-lewo
      * 
      */
-    std::vector<TrafficLights> LeftRightLights;
+    std::vector<TrafficLights> _leftRightLights;
     /**
      * @brief timer, do odmierzania czasu świateł
      * 
      */
-    float timer;
+    float _timer;
     /**
      * @brief Czas cyklu skrzyżowania
      * 
      */
-    float cycleTime;
+    float _cycleTime;
     /**
      * @brief Flaga mówiąca o tym, czy światła w kierunku góra-dół są zielone
      * 
      */
-    bool upDownGreen;
+    bool _upDownGreen;
 };
 
 #endif // !INTERSECTION_H
